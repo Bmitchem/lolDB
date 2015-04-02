@@ -24,10 +24,23 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
+            name='Items',
+            fields=[
+                ('id', models.IntegerField(serialize=False, primary_key=True)),
+                ('name', models.CharField(max_length=256)),
+                ('group', models.CharField(max_length=256, null=True)),
+                ('description', models.CharField(max_length=1024)),
+                ('plaintext', models.CharField(max_length=1024, null=True)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
             name='MatchSummary',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('mapId', models.IntegerField(default=0)),
+                ('mapId', models.CharField(max_length=b'25')),
                 ('matchCreation', models.IntegerField(default=0)),
                 ('matchDuration', models.IntegerField(default=0)),
                 ('matchId', models.IntegerField(default=0)),
@@ -49,7 +62,6 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('championId', models.IntegerField(default=0)),
                 ('highestAchievedSeasonTier', models.CharField(max_length=25)),
-                ('participantId', models.IntegerField()),
                 ('spell1Id', models.IntegerField(default=0)),
                 ('spell2Id', models.IntegerField(default=0)),
                 ('teamId', models.IntegerField(default=0)),
@@ -62,7 +74,6 @@ class Migration(migrations.Migration):
             name='ParticipantStats',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('participant', models.IntegerField(default=0)),
                 ('summonerName', models.CharField(max_length=30)),
                 ('champLevel', models.IntegerField(default=0)),
                 ('combatPlayerScore', models.IntegerField(default=0)),
@@ -126,6 +137,18 @@ class Migration(migrations.Migration):
                 ('wardsKilled', models.IntegerField(default=0)),
                 ('wardsPlaced', models.IntegerField(default=0)),
                 ('winner', models.IntegerField(default=0)),
+                ('participant', models.OneToOneField(to='armory.Participant')),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Summoners',
+            fields=[
+                ('summonerId', models.IntegerField(default=0, serialize=False, primary_key=True)),
+                ('teamId', models.IntegerField(default=0)),
+                ('champion', models.ManyToManyField(to='armory.Champions')),
             ],
             options={
             },

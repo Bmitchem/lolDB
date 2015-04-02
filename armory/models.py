@@ -4,14 +4,12 @@ from django.db import models
 class Participant(models.Model):
     championId = models.IntegerField(default=0)
     highestAchievedSeasonTier = models.CharField(max_length=25)
-    participantId = models.IntegerField()
     spell1Id = models.IntegerField(default=0)
     spell2Id = models.IntegerField(default=0)
     teamId = models.IntegerField(default=0)
 
-
 class ParticipantStats(models.Model):
-    participant = models.IntegerField(default=0)
+    participant = models.OneToOneField(Participant)
     summonerName = models.CharField(max_length=30)
     champLevel = models.IntegerField(default=0)
     combatPlayerScore = models.IntegerField(default=0)
@@ -76,9 +74,8 @@ class ParticipantStats(models.Model):
     wardsPlaced = models.IntegerField(default=0)
     winner = models.IntegerField(default=0)
 
-
 class MatchSummary(models.Model):
-    mapId = models.IntegerField(default=0)
+    mapId = models.CharField(max_length="25")
     matchCreation = models.IntegerField(default=0)
     matchDuration = models.IntegerField(default=0)
     matchId = models.IntegerField(default=0)
@@ -103,4 +100,11 @@ class Items(models.Model):
     name = models.CharField(max_length=256)
     group = models.CharField(max_length=256, null=True)
     description = models.CharField(max_length=1024)
-    plaintext =  models.CharField(max_length=1024, null=True)
+    plaintext = models.CharField(max_length=1024, null=True)
+
+class Summoners(models.Model):
+    summonerId = models.IntegerField(default=0, primary_key=True)
+    teamId = models.IntegerField(default=0)
+    champion = models.ManyToManyField(Champions)
+    dateAdded = models.DateTimeField(auto_now=True, null=True)
+
