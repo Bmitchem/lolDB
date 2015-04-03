@@ -2,14 +2,17 @@ __author__ = 'bob'
 from django.db import models
 
 class Participant(models.Model):
-    championId = models.IntegerField(default=0)
+    summonerId =  models.IntegerField(primary_key=True)
+    champion = models.IntegerField(default=0)
     highestAchievedSeasonTier = models.CharField(max_length=25, null=True)
     spell1Id = models.IntegerField(default=0)
     spell2Id = models.IntegerField(default=0)
     teamId = models.IntegerField(default=0)
+    matchId = models.IntegerField(default=0)
+
 
 class ParticipantStats(models.Model):
-    participant = models.OneToOneField(Participant)
+    participant = models.ManyToManyField(Participant)
     summonerName = models.CharField(max_length=30, null=True)
     champLevel = models.IntegerField(default=0)
     combatPlayerScore = models.IntegerField(default=0)
@@ -76,14 +79,51 @@ class ParticipantStats(models.Model):
     turretsKilled = models.IntegerField(default=0, null=True)
     playerPosition = models.IntegerField(default=0, null=True)
     playerRole = models.IntegerField(default=0, null=True)
+    timePlayed = models.IntegerField(default=0, null=True)
+    team = models.IntegerField(default=0, null=True)
+
+class ChampionSkins(models.Model):
+    id = models.IntegerField(primary_key=True)
+    name = models.CharField(max_length=256)
+    num = models.IntegerField(default=0)
+    
+class ChampionTags(models.Model):
+    tag = models.CharField(max_length=56)
+    
+class ChampionStats(models.Model):
+    championId = models.IntegerField(primary_key=True)
+    armor = models.IntegerField(default=0)
+    armorperlevel = models.IntegerField(default=0)
+    attackdamage = models.IntegerField(default=0)
+    attackdamageperlevel = models.IntegerField(default=0)
+    attackrange = models.IntegerField(default=0)
+    attackspeedoffset = models.IntegerField(default=0)
+    attackspeedperlevel = models.IntegerField(default=0)
+    crit = models.IntegerField(default=0)
+    critperlevel = models.IntegerField(default=0)
+    hp = models.IntegerField(default=0)
+    hpperlevel = models.IntegerField(default=0)
+    hpregen = models.IntegerField(default=0)
+    hpregenperlevel = models.IntegerField(default=0)
+    movespeed = models.IntegerField(default=0)
+    mp = models.IntegerField(default=0)
+    mpperlevel = models.IntegerField(default=0)
+    mpregen = models.IntegerField(default=0)
+    mpregenperlevel = models.IntegerField(default=0)
+    spellblock = models.IntegerField(default=0)
+    spellblockperlevel = models.IntegerField(default=0)
 
 
 class Champions(models.Model):
     id = models.IntegerField(primary_key=True)
-    active = models.BooleanField(default=False)
-    freeToPlay = models.BooleanField(default=False)
-    botMmEnabled = models.BooleanField(default=False)
-    rankedPlayEnabled = models.BooleanField(default=False)
+    active = models.NullBooleanField(default=True, null=True)
+    freeToPlay = models.NullBooleanField(default=False, null=True)
+    botMmEnabled = models.NullBooleanField(default=False, null=True)
+    rankedPlayEnabled = models.NullBooleanField(default=False, null=True)
+    name = models.CharField(max_length=256)
+    skins = models.ManyToManyField(ChampionSkins)
+    tag = models.ManyToManyField(ChampionTags)
+    stats = models.ManyToManyField(ChampionStats)
 
 
 class Items(models.Model):
@@ -95,23 +135,23 @@ class Items(models.Model):
 
 class Summoners(models.Model):
     summonerId = models.IntegerField(default=0, primary_key=True)
-    teamId = models.IntegerField(default=0)
+    teamId = models.IntegerField(default=0, null=True)
     champion = models.ManyToManyField(Champions, null=True)
     dateAdded = models.DateTimeField(auto_now=True, null=True)
 
 class Game(models.Model):
     summonerId=models.IntegerField(default=0)
     gameId=models.IntegerField(primary_key=True),
-    gameMode=models.CharField(max_length=50),
+    gameMode=models.CharField(max_length=50, null=False),
     gameType=models.CharField(max_length=50),
     mapId=models.IntegerField(default=0)
     championId=models.ManyToManyField(Champions, null=True)
     spell1=models.IntegerField(default=0)
-    spell2=models.IntegerField(default=0)    
-    fellowPlayers=models.ManyToManyField(Summoners, null=True)
+    spell2=models.IntegerField(default=0)
+    fellowPlayers=models.ManyToManyField(Participant, null=True)
     ipEarned=models.IntegerField(default=0)
     stats=models.ManyToManyField(ParticipantStats, null=True)
-    matchCreation=models.IntegerField(default=0)
+    matchCreation=models.DateTimeField()
 
 
 class MatchSummary(models.Model):
@@ -122,7 +162,7 @@ class MatchSummary(models.Model):
     matchMode = models.CharField(max_length=256)
     matchType = models.CharField(max_length=256)
     matchVersion = models.CharField(max_length=256)
-    participants = models.ManyToManyField(Participant, null=True)
+    participants = models.ManyToManyField(Summoners, null=True)
     platformId = models.CharField(max_length=256)
     queueType = models.CharField(max_length=75)
     region = models.CharField(max_length=10)

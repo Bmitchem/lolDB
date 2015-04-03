@@ -3,37 +3,39 @@ import requests
 from django.conf import settings
 from armory import models
 import logging
+from pprint import pprint
 
 
 class RiotInterface(object):
-
     def __init__(self):
         pass
 
     def upload_match_history(self, MATCH_DATA):
         for match in MATCH_DATA.get('matches'):
             match_db, unused = models.MatchSummary.objects.get_or_create(matchId=match.get('matchId'),
-                                defaults={
-                                "region":match.get('region'),
-                                "platformId":match.get('platformId'),
-                                "matchCreation":match.get('matchDuration'),
-                                "matchDuration":match.get('matchDuration'),
-                                "queueType":match.get('queueType'),
-                                "season":match.get('season'),
-                                "matchVersion":match.get('matchVersion'),
-                                "mapId":match.get('mapId'),
-                                "matchMode":match.get('matchMode'),
-                                "matchType":match.get('matchType'),
-                                }
-                                )
+                                                                         defaults={
+                                                                             "region": match.get('region'),
+                                                                             "platformId": match.get('platformId'),
+                                                                             "matchCreation": match.get(
+                                                                                 'matchDuration'),
+                                                                             "matchDuration": match.get(
+                                                                                 'matchDuration'),
+                                                                             "queueType": match.get('queueType'),
+                                                                             "season": match.get('season'),
+                                                                             "matchVersion": match.get('matchVersion'),
+                                                                             "mapId": match.get('mapId'),
+                                                                             "matchMode": match.get('matchMode'),
+                                                                             "matchType": match.get('matchType'),
+                                                                         }
+                                                                         )
             participants = match.get('participants')
             for participant in participants:
                 p = models.Participant(teamId=participant.get('teamId'),
-                                                     spell1Id=participant.get('spell1Id'),
-                                                     spell2Id=participant.get('spell2Id'),
-                                                     championId=participant.get('championId'),
-                                                     highestAchievedSeasonTier=participant.get('highestAchievedSeasonTier'),
-                                                     )
+                                       spell1Id=participant.get('spell1Id'),
+                                       spell2Id=participant.get('spell2Id'),
+                                       championId=participant.get('championId'),
+                                       highestAchievedSeasonTier=participant.get('highestAchievedSeasonTier'),
+                                       )
                 p.save()
                 match_db.participants.add(p)
                 match_db.save()
@@ -94,7 +96,7 @@ class RiotInterface(object):
                     killingSprees=stats.get('killingSprees'),
                     totalUnitsHealed=stats.get('totalUnitsHealed'),
                     totalTimeCrowdControlDealt=stats.get('totalTimeCrowdControlDealt'),
-                    )
+                )
                 p_stats.participant = p
                 p_stats.save()
                 match_db.participants.add(p)
@@ -108,6 +110,7 @@ class RiotInterface(object):
             return "Not in Game"
         elif resp.status_code == 200:
             return resp
+
     def match_history(self, SummonerID):
         resp = requests.get('https://na.api.pvp.net/api/lol/na/v2.2/matchhistory/%s?api_key=%s' %
                             (str(SummonerID), settings.RIOT_API_KEY))
@@ -129,19 +132,72 @@ class RiotInterface(object):
             raise Exception
 
     def update_champions(self):
-        champion_list = self.get_champions().json()
-        for champion in champion_list['champions']:
-            logging.info("updating champion: ", champion['id'])
-            c, new = models.Champions.objects.get_or_create(id=champion['id'],
-                                                            defaults={
-                                                                'active':champion['active'],
-                                                                'freeToPlay':champion['freeToPlay'],
-                                                                'botMmEnabled':champion['botMmEnabled'],
-                                                                'rankedPlayEnabled':champion['rankedPlayEnabled']
-                                                            })
+        import json
+
+        champion_list = json.load(open('champion_detail.json'))
+        champion_keys = champion_list['data'].keys()
+
+        for key in champion_keys:
+            champion = champion_list['data'].get(key)
+            print("processing champion: ", champion.get('name'))
+
+            c = models.Champions.objects.get_or_create(id=champion.get('id'),
+                                                       defaults={
+                                                           'name': champion.get('name'),
+                                                       })[0]
+
+
+            stats_info = champion['stats']
+            stats = models.ChampionStats.objects.get_or_create(championId=champion.get('id'),
+                                                               defaults={
+                                                                   "armor": stats_info.get('armor'),
+                                                                   "armorperlevel": stats_info.get('armorperlevel'),
+                                                                   "attackdamage": stats_info.get('attackdamage'),
+                                                                   "attackdamageperlevel": stats_info.get(
+                                                                       'attackdamageperlevel'),
+                                                                   "attackrange": stats_info.get('attackrange'),
+                                                                   "attackspeedoffset": stats_info.get(
+                                                                       'attackspeedoffset'),
+                                                                   "attackspeedperlevel": stats_info.get(
+                                                                       'attackspeedperlevel'),
+                                                                   "crit": stats_info.get('crit'),
+                                                                   "critperlevel": stats_info.get('critperlevel'),
+                                                                   "hp": stats_info.get('hp'),
+                                                                   "hpperlevel": stats_info.get('hpperlevel'),
+                                                                   "hpregen": stats_info.get('hpregen'),
+                                                                   "hpregenperlevel": stats_info.get('hpregenperlevel'),
+                                                                   "movespeed": stats_info.get('movespeed'),
+                                                                   "mp": stats_info.get('mp'),
+                                                                   "mpperlevel": stats_info.get('mpperlevel'),
+                                                                   "mpregen": stats_info.get('mpregen'),
+                                                                   "mpregenperlevel": stats_info.get('mpregenperlevel'),
+                                                                   "spellblock": stats_info.get('spellblock'),
+                                                                   "spellblockperlevel": stats_info.get(
+                                                                       'spellblockperlevel'),
+                                                               })[0]
+
+            c.stats.add(stats)
+
+
+            for skin in champion.get('skins'):
+                new_skin = models.ChampionSkins.objects.get_or_create(id=skin.get('id'),
+                                                                            defaults={
+                                                                                'name': skin.get('name'),
+                                                                                'num': skin.get('num'),
+                                                                            }
+                                                                    )[0]
+
+                c.skins.add(new_skin)
+
+            for tag in champion.get('tags'):
+                new_tag = models.ChampionTags.objects.get_or_create(tag=tag)[0]
+
+                c.tag.add(new_tag)
+
     def get_items(self):
-        resp = requests.get('https://global.api.pvp.net/api/lol/static-data/na/v1.2/item?itemListData=inStore&api_key=%s'
-                            % settings.RIOT_API_KEY)
+        resp = requests.get(
+            'https://global.api.pvp.net/api/lol/static-data/na/v1.2/item?itemListData=inStore&api_key=%s'
+            % settings.RIOT_API_KEY)
         if resp.status_code == 200:
             return resp
         else:
@@ -158,10 +214,10 @@ class RiotInterface(object):
             print "Saving item: ", items.get('data')[key]['name']
             i, new = models.Items.objects.get_or_create(id=items.get('data')[key]['id'],
                                                         defaults={
-                                                            'name':items.get('data')[key]['name'],
-                                                            'group':items.get('data')[key].get('group',None),
-                                                            'description':items.get('data')[key]['description'],
-                                                            'plaintext':items.get('data')[key].get('plaintext', None)
+                                                            'name': items.get('data')[key]['name'],
+                                                            'group': items.get('data')[key].get('group', None),
+                                                            'description': items.get('data')[key]['description'],
+                                                            'plaintext': items.get('data')[key].get('plaintext', None)
                                                         })
 
     def summoner_id_pull(self, summonerId):
@@ -174,102 +230,123 @@ class RiotInterface(object):
             raise Exception
 
     def import_summoner_id_from_pull(self, summonerId):
-        # resp = self.summoner_id_pull(summonerId).json()
+        from datetime import datetime
+        resp = self.summoner_id_pull(summonerId).json()
         # fd = open('starting_match_history.json', 'w+')
-        import json
-        resp = json.load(open('starting_match_history.json'))
+        # import json
 
+        # resp = json.load(open('starting_match_history.json'))
 
+        # pprint(resp)
         curr_summoners = len(models.Summoners.objects.all())
+        curr_games = len(models.Game.objects.all())
         for game in resp['games']:
             try:
+
                 champ = models.Champions.objects.get(id=game['championId'])
-                new_match, trash = models.Game.objects.get_or_create(gameId=game['gameId'],
-                                                          defaults={
-                                                              'gameMode':game['gameMode'],
-                                                              'gameType':game['gameType'],
-                                                              'mapId':game['mapId'],
-                                                              'matchCreation':game['createDate'],
-                                                              'ipEarned':game['ipEarned'],
-                                                              'summonerId':resp['summonerId'],
-                                                              'championId':champ,
-                                                              'spell1':game['spell1'],
-                                                              'spell2':game['spell2'],
+                new_match, new = models.Game.objects.get_or_create(id=game['gameId'],
+                                                                     defaults={
+                                                                         'mapId': game['mapId'],
+                                                                         'matchCreation': datetime.fromtimestamp(game['createDate'] / 1000.0),
+                                                                         'ipEarned': game['ipEarned'],
+                                                                         'summonerId': resp['summonerId'],
+                                                                         'spell1': game['spell1'],
+                                                                         'spell2': game['spell2'],
 
-                                                          })
+                                                                     })
+                if new:
+                    new_match.gameType=game['gameType']
+                    new_match.gameMode=game['gameMode']
+                    new_match.save()
 
-                player = models.Participant.objects.get_or_create(championId=game['championId'],
-                                                           spell1Id=game['spell1'],
-                                                           spell2Id=game['spell2'],
-                                                           teamId=game['teamId']
-                                                           )[0]
+                new_match.championId.add(champ)
+                pprint(new_match)
+
+                player = models.Participant.objects.get_or_create(summonerId=summonerId,
+                                                                  defaults={
+                                                                    'spell1Id':game['spell1'],
+                                                                    'spell2Id':game['spell2'],
+                                                                    'teamId':game['teamId'],
+                                                                    'matchId':game['gameId'],
+
+                                                                  })[0]
                 new_match.fellowPlayers.add(player)
                 player_sets = game['fellowPlayers']
                 for players in player_sets:
                     champ = models.Champions.objects.get(id=players['championId'])
-                    summoner, trash = models.Summoners.objects.get_or_create(summonerId=players['summonerId'],
-                                                              defaults={
-                                                                'teamId':players['teamId'],
-                                                              })
-                    summoner.save()
+                    participant, trash = models.Participant.objects.get_or_create(summonerId=players['summonerId'],
+                                                                             defaults={
+                                                                                 'teamId': players['teamId'],
+                                                                             })
+                    participant.save()
+                    summoner = models.Summoners.objects.get_or_create(summonerId=players['summonerId'],
+                                                                      defaults={
+                                                                                 'teamId': players['teamId'],
+                                                                             }
+                                                                      )[0]
+
                     summoner.champion.add(champ)
                     summoner.save()
-                    new_match.fellowPlayers.add(summoner)
+                    new_match.fellowPlayers.add(participant)
                     new_match.championId.add(champ)
                     new_match.save()
 
                 stats = game['stats']
                 new_stats, trash = models.ParticipantStats.objects.get_or_create(
-                     champLevel=stats['level'],
-                     goldEarned=stats['goldEarned'],
-                     deaths=stats['numDeaths'],
-                     turretsKilled=stats['turretsKilled'],
-                     kills=stats['championsKilled'],
-                     goldSpent=stats['goldSpent'],
-                     totalDamageDealt=stats['totalDamageDealt'],
-                     totalDamageTaken=stats['TotalDamageTaken'],
-                     doubleKills= stats['doubleKills'],
-                     tripleKills= stats['tripleKills'],
-                     killingSprees=stats['killingSprees'],
-                     largestKillingSpree= stats['largestKillingSpree'],
-                     team= stats['team'],
-                     win= stats['win'],
-                     neutralMinionsKilled= stats['neutralMinionsKilled'],
-                     largestMultiKill= stats['largestMultiKill'],
-                     physicalDamageDealtPlayer= stats['physicalDamageDealtPlayer'],
-                     magicDamageDealtPlayer= stats['magicDamageDealtPlayer'],
-                     physicalDamageTaken= stats['physicalDamageTaken'],
-                     magicDamageTaken= stats['magicDamageTaken'],
-                     timePlayed= stats['timePlayed'],
-                     totalHeal= stats['totalHeal'],
-                     totalUnitsHealed= stats['totalUnitsHealed'],
-                     assists= stats['assists'],
-                     item0= stats['item0'],
-                     item1= stats['item1'],
-                     item2= stats['item2'],
-                     item3= stats['item3'],
-                     item4= stats['item4'],
-                     item5= stats['item5'],
-                     item6= stats['item6'],
-                     visionWardsBought= stats['visionWardsBought'] ,
-                     magicDamageDealtToChampions= stats['magicDamageDealtToChampions'],
-                     physicalDamageDealtToChampions= stats['physicalDamageDealtToChampions'],
-                     totalDamageDealtToChampions= stats['totalDamageDealtToChampions'],
-                     trueDamageDealtPlayer= stats['trueDamageDealtPlayer'],
-                     trueDamageTaken= stats['trueDamageTaken'],
-                     wardPlaced= stats['wardPlaced'],
-                     neutralMinionsKilledEnemyJungle= stats['neutralMinionsKilledEnemyJungle'],
-                     neutralMinionsKilledYourJungle= stats['neutralMinionsKilledYourJungle'],
-                     totalTimeCrowdControlDealt= stats['totalTimeCrowdControlDealt'],
-                     playerRole= stats['playerRole'],
-                     playerPosition= stats['playerPosition']
+                    champLevel=stats.get('level', 0),
+                    goldEarned=stats.get('goldEarned', 0),
+                    deaths=stats.get('numDeaths', 0),
+                    turretsKilled=stats.get('turretsKilled', 0),
+                    kills=stats.get('championsKilled', 0),
+                    goldSpent=stats.get('goldSpent', 0),
+                    totalDamageDealt=stats.get('totalDamageDealt', 0),
+                    totalDamageTaken=stats.get('totalDamageTaken', 0),
+                    doubleKills=stats.get('doubleKills', 0),
+                    tripleKills=stats.get('tripleKills', 0),
+                    killingSprees=stats.get('killingSprees', 0),
+                    largestKillingSpree=stats.get('largestKillingSpree', 0),
+                    team=stats.get('team', 0),
+                    winner=stats.get('win', 0),
+                    neutralMinionsKilled=stats.get('neutralMinionsKilled', 0),
+                    largestMultiKill=stats.get('largestMultiKill', 0),
+                    physicalDamageDealt=stats.get('physicalDamageDealtPlayer', 0),
+                    magicDamageDealt=stats.get('magicDamageDealtPlayer', 0),
+                    physicalDamageTaken=stats.get('physicalDamageTaken', 0),
+                    magicDamageTaken=stats.get('magicDamageTaken', 0),
+                    timePlayed=stats.get('timePlayed', 0),
+                    totalHeal=stats.get('totalHeal', 0),
+                    totalUnitsHealed=stats.get('totalUnitsHealed', 0),
+                    assists=stats.get('assists', 0),
+                    item0=stats.get('item0', 0),
+                    item1=stats.get('item1', 0),
+                    item2=stats.get('item2', 0),
+                    item3=stats.get('item3', 0),
+                    item4=stats.get('item4', 0),
+                    item5=stats.get('item5', 0),
+                    item6=stats.get('item6', 0),
+                    visionWardsBoughtInGame=stats.get('visionWardsBought', 0),
+                    magicDamageDealtToChampions=stats.get('magicDamageDealtToChampions', 0),
+                    physicalDamageDealtToChampions=stats.get('physicalDamageDealtToChampions', 0),
+                    totalDamageDealtToChampions=stats.get('totalDamageDealtToChampions', 0),
+                    trueDamageDealtToChampions=stats.get('trueDamageDealtPlayer', 0),
+                    trueDamageTaken=stats.get('trueDamageTaken', 0),
+                    wardsPlaced=stats.get('wardPlaced', 0),
+                    neutralMinionsKilledEnemyJungle=stats.get('neutralMinionsKilledEnemyJungle', 0),
+                    neutralMinionsKilledTeamJungle=stats.get('neutralMinionsKilledYourJungle', 0),
+                    totalTimeCrowdControlDealt=stats.get('totalTimeCrowdControlDealt', 0),
+                    playerRole=stats.get('playerRole', 0),
+                    playerPosition=stats.get('playerPosition', 0)
 
-                     )
+                )
+                new_stats.participant.add(
+                        models.Participant.objects.get(summonerId=summonerId),)
 
-            except KeyError:
-                import sys
-                sys.exit("You're out of API requests: ")
+            except KeyError as e:
+                print "Out of API sleeping"
+                import time
+                time.sleep(30)
         print "Added %d Summoners" % (len(models.Summoners.objects.all()) - curr_summoners)
+        print "Added %d Games" % (len(models.Game.objects.all()) - curr_games)
 
 
 

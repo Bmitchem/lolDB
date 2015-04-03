@@ -18,13 +18,13 @@ if __name__=='__main__':
     from riot_api import RiotInterface
     ri = RiotInterface()
     django.setup()
-    for i in range(1,9):
-        starttime = datetime.datetime.now()
-        print "uploading file: ", i
-        populate('matches%s.json' % i)
-        print "finished in ", datetime.datetime.now()-starttime
-
-    print "updating champions"
+    # for i in range(1,9):
+    #     starttime = datetime.datetime.now()
+    #     print "uploading file: ", i
+    #     populate('matches%s.json' % i)
+    #     print "finished in ", datetime.datetime.now()-starttime
+    #
+    # print "updating champions"
     ri.update_champions()
     ri.update_items()
     ri.import_summoner_id_from_pull(25500646)

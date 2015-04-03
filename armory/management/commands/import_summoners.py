@@ -10,11 +10,7 @@ class Command(BaseCommand):
 
         ri = RiotInterface()
         for index, summoner in enumerate(summoner_list):
-            if index % 500 == 0 and index != 0:
-                time.sleep(60)
-            if index % 10 == 0 and index != 0:
-                time.sleep(10)
-            else:
-                print "Importing history for " + str(summoner.summonerId)
-                ri.import_summoner_id_from_pull(summoner.summonerId)
-                time.sleep(3)
+            print "Importing history for " + str(summoner.summonerId)
+            ri.import_summoner_id_from_pull(summoner.summonerId)
+
+        # ri.import_summoner_id_from_pull(25500646)

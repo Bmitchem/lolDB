@@ -14,10 +14,77 @@ class Migration(migrations.Migration):
             name='Champions',
             fields=[
                 ('id', models.IntegerField(serialize=False, primary_key=True)),
-                ('active', models.BooleanField(default=False)),
-                ('freeToPlay', models.BooleanField(default=False)),
-                ('botMmEnabled', models.BooleanField(default=False)),
-                ('rankedPlayEnabled', models.BooleanField(default=False)),
+                ('active', models.NullBooleanField(default=True)),
+                ('freeToPlay', models.NullBooleanField(default=False)),
+                ('botMmEnabled', models.NullBooleanField(default=False)),
+                ('rankedPlayEnabled', models.NullBooleanField(default=False)),
+                ('name', models.CharField(max_length=256)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='ChampionSkins',
+            fields=[
+                ('id', models.IntegerField(serialize=False, primary_key=True)),
+                ('name', models.CharField(max_length=256)),
+                ('num', models.IntegerField(default=0)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='ChampionStats',
+            fields=[
+                ('championId', models.IntegerField(serialize=False, primary_key=True)),
+                ('armor', models.IntegerField(default=0)),
+                ('armorperlevel', models.IntegerField(default=0)),
+                ('attackdamage', models.IntegerField(default=0)),
+                ('attackdamageperlevel', models.IntegerField(default=0)),
+                ('attackrange', models.IntegerField(default=0)),
+                ('attackspeedoffset', models.IntegerField(default=0)),
+                ('attackspeedperlevel', models.IntegerField(default=0)),
+                ('crit', models.IntegerField(default=0)),
+                ('critperlevel', models.IntegerField(default=0)),
+                ('hp', models.IntegerField(default=0)),
+                ('hpperlevel', models.IntegerField(default=0)),
+                ('hpregen', models.IntegerField(default=0)),
+                ('hpregenperlevel', models.IntegerField(default=0)),
+                ('movespeed', models.IntegerField(default=0)),
+                ('mp', models.IntegerField(default=0)),
+                ('mpperlevel', models.IntegerField(default=0)),
+                ('mpregen', models.IntegerField(default=0)),
+                ('mpregenperlevel', models.IntegerField(default=0)),
+                ('spellblock', models.IntegerField(default=0)),
+                ('spellblockperlevel', models.IntegerField(default=0)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='ChampionTags',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('tag', models.CharField(max_length=56)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Game',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('summonerId', models.IntegerField(default=0)),
+                ('mapId', models.IntegerField(default=0)),
+                ('spell1', models.IntegerField(default=0)),
+                ('spell2', models.IntegerField(default=0)),
+                ('ipEarned', models.IntegerField(default=0)),
+                ('matchCreation', models.DateTimeField()),
+                ('championId', models.ManyToManyField(to='armory.Champions', null=True)),
             ],
             options={
             },
@@ -59,9 +126,9 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Participant',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('summonerId', models.IntegerField(serialize=False, primary_key=True)),
                 ('championId', models.IntegerField(default=0)),
-                ('highestAchievedSeasonTier', models.CharField(max_length=25)),
+                ('highestAchievedSeasonTier', models.CharField(max_length=25, null=True)),
                 ('spell1Id', models.IntegerField(default=0)),
                 ('spell2Id', models.IntegerField(default=0)),
                 ('teamId', models.IntegerField(default=0)),
@@ -74,7 +141,7 @@ class Migration(migrations.Migration):
             name='ParticipantStats',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('summonerName', models.CharField(max_length=30)),
+                ('summonerName', models.CharField(max_length=30, null=True)),
                 ('champLevel', models.IntegerField(default=0)),
                 ('combatPlayerScore', models.IntegerField(default=0)),
                 ('deaths', models.IntegerField(default=0)),
@@ -137,7 +204,12 @@ class Migration(migrations.Migration):
                 ('wardsKilled', models.IntegerField(default=0)),
                 ('wardsPlaced', models.IntegerField(default=0)),
                 ('winner', models.IntegerField(default=0)),
-                ('participant', models.OneToOneField(to='armory.Participant')),
+                ('turretsKilled', models.IntegerField(default=0, null=True)),
+                ('playerPosition', models.IntegerField(default=0, null=True)),
+                ('playerRole', models.IntegerField(default=0, null=True)),
+                ('timePlayed', models.IntegerField(default=0, null=True)),
+                ('team', models.IntegerField(default=0, null=True)),
+                ('participant', models.ManyToManyField(to='armory.Participant')),
             ],
             options={
             },
@@ -147,8 +219,9 @@ class Migration(migrations.Migration):
             name='Summoners',
             fields=[
                 ('summonerId', models.IntegerField(default=0, serialize=False, primary_key=True)),
-                ('teamId', models.IntegerField(default=0)),
-                ('champion', models.ManyToManyField(to='armory.Champions')),
+                ('teamId', models.IntegerField(default=0, null=True)),
+                ('dateAdded', models.DateTimeField(auto_now=True, null=True)),
+                ('champion', models.ManyToManyField(to='armory.Champions', null=True)),
             ],
             options={
             },
@@ -157,7 +230,37 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='matchsummary',
             name='participants',
+            field=models.ManyToManyField(to='armory.Summoners', null=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='game',
+            name='fellowPlayers',
             field=models.ManyToManyField(to='armory.Participant', null=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='game',
+            name='stats',
+            field=models.ManyToManyField(to='armory.ParticipantStats', null=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='champions',
+            name='skins',
+            field=models.ManyToManyField(to='armory.ChampionSkins'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='champions',
+            name='stats',
+            field=models.ManyToManyField(to='armory.ChampionStats'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='champions',
+            name='tag',
+            field=models.ManyToManyField(to='armory.ChampionTags'),
             preserve_default=True,
         ),
     ]
