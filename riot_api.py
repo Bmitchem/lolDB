@@ -174,10 +174,36 @@ class RiotInterface(object):
             raise Exception
 
     def import_summoner_id_from_pull(self, summonerId):
-        resp = self.summoner_id_pull(summonerId).json()
+        # resp = self.summoner_id_pull(summonerId).json()
+        # fd = open('starting_match_history.json', 'w+')
+        import json
+        resp = json.load(open('starting_match_history.json'))
+
+
         curr_summoners = len(models.Summoners.objects.all())
         for game in resp['games']:
             try:
+                champ = models.Champions.objects.get(id=game['championId'])
+                new_match, trash = models.Game.objects.get_or_create(gameId=game['gameId'],
+                                                          defaults={
+                                                              'gameMode':game['gameMode'],
+                                                              'gameType':game['gameType'],
+                                                              'mapId':game['mapId'],
+                                                              'matchCreation':game['createDate'],
+                                                              'ipEarned':game['ipEarned'],
+                                                              'summonerId':resp['summonerId'],
+                                                              'championId':champ,
+                                                              'spell1':game['spell1'],
+                                                              'spell2':game['spell2'],
+
+                                                          })
+
+                player = models.Participant.objects.get_or_create(championId=game['championId'],
+                                                           spell1Id=game['spell1'],
+                                                           spell2Id=game['spell2'],
+                                                           teamId=game['teamId']
+                                                           )[0]
+                new_match.fellowPlayers.add(player)
                 player_sets = game['fellowPlayers']
                 for players in player_sets:
                     champ = models.Champions.objects.get(id=players['championId'])
@@ -188,10 +214,62 @@ class RiotInterface(object):
                     summoner.save()
                     summoner.champion.add(champ)
                     summoner.save()
+                    new_match.fellowPlayers.add(summoner)
+                    new_match.championId.add(champ)
+                    new_match.save()
+
+                stats = game['stats']
+                new_stats, trash = models.ParticipantStats.objects.get_or_create(
+                     champLevel=stats['level'],
+                     goldEarned=stats['goldEarned'],
+                     deaths=stats['numDeaths'],
+                     turretsKilled=stats['turretsKilled'],
+                     kills=stats['championsKilled'],
+                     goldSpent=stats['goldSpent'],
+                     totalDamageDealt=stats['totalDamageDealt'],
+                     totalDamageTaken=stats['TotalDamageTaken'],
+                     doubleKills= stats['doubleKills'],
+                     tripleKills= stats['tripleKills'],
+                     killingSprees=stats['killingSprees'],
+                     largestKillingSpree= stats['largestKillingSpree'],
+                     team= stats['team'],
+                     win= stats['win'],
+                     neutralMinionsKilled= stats['neutralMinionsKilled'],
+                     largestMultiKill= stats['largestMultiKill'],
+                     physicalDamageDealtPlayer= stats['physicalDamageDealtPlayer'],
+                     magicDamageDealtPlayer= stats['magicDamageDealtPlayer'],
+                     physicalDamageTaken= stats['physicalDamageTaken'],
+                     magicDamageTaken= stats['magicDamageTaken'],
+                     timePlayed= stats['timePlayed'],
+                     totalHeal= stats['totalHeal'],
+                     totalUnitsHealed= stats['totalUnitsHealed'],
+                     assists= stats['assists'],
+                     item0= stats['item0'],
+                     item1= stats['item1'],
+                     item2= stats['item2'],
+                     item3= stats['item3'],
+                     item4= stats['item4'],
+                     item5= stats['item5'],
+                     item6= stats['item6'],
+                     visionWardsBought= stats['visionWardsBought'] ,
+                     magicDamageDealtToChampions= stats['magicDamageDealtToChampions'],
+                     physicalDamageDealtToChampions= stats['physicalDamageDealtToChampions'],
+                     totalDamageDealtToChampions= stats['totalDamageDealtToChampions'],
+                     trueDamageDealtPlayer= stats['trueDamageDealtPlayer'],
+                     trueDamageTaken= stats['trueDamageTaken'],
+                     wardPlaced= stats['wardPlaced'],
+                     neutralMinionsKilledEnemyJungle= stats['neutralMinionsKilledEnemyJungle'],
+                     neutralMinionsKilledYourJungle= stats['neutralMinionsKilledYourJungle'],
+                     totalTimeCrowdControlDealt= stats['totalTimeCrowdControlDealt'],
+                     playerRole= stats['playerRole'],
+                     playerPosition= stats['playerPosition']
+
+                     )
+
             except KeyError:
                 import sys
                 sys.exit("You're out of API requests: ")
-
         print "Added %d Summoners" % (len(models.Summoners.objects.all()) - curr_summoners)
+
 
 

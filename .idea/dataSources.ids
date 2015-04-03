@@ -723,7 +723,54 @@
       <column name="botMmEnabled" sqlType="TINYINT" precision="3" scale="0" nullable="false" jdbcType="-6"/>
       <column name="rankedPlayEnabled" sqlType="TINYINT" precision="3" scale="0" nullable="false" jdbcType="-6"/>
       <primary-key name="PRIMARY" columns="id"/>
-      <exported-key name="champions_id_refs_id_18495cc0" table="armory_summoners_champion" schema="" catalog="riotDatabase" columns="champions_id"/>
+      <exported-key name="armory_game_champions_id_293f8acb14b02ba1_fk_armory_champions_id" table="armory_game_championId" schema="" catalog="riotDatabase" columns="champions_id"/>
+      <exported-key name="armory_summ_champions_id_3af87169461a32f4_fk_armory_champions_id" table="armory_summoners_champion" schema="" catalog="riotDatabase" columns="champions_id"/>
+    </table>
+    <table name="armory_game" schema="" catalog="riotDatabase" type="TABLE">
+      <column name="id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="mapId" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="spell1" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="spell2" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="ipEarned" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="matchCreation" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="summonerId" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <exported-key name="armory_game_championI_game_id_708280740e685d4e_fk_armory_game_id" table="armory_game_championId" schema="" catalog="riotDatabase" columns="game_id"/>
+      <exported-key name="armory_game_fellowPla_game_id_3c9bf7024d924aca_fk_armory_game_id" table="armory_game_fellowPlayers" schema="" catalog="riotDatabase" columns="game_id"/>
+      <exported-key name="armory_game_stats_game_id_645281ef46f26452_fk_armory_game_id" table="armory_game_stats" schema="" catalog="riotDatabase" columns="game_id"/>
+    </table>
+    <table name="armory_game_championId" schema="" catalog="riotDatabase" type="TABLE">
+      <column name="id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="game_id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="champions_id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <foreign-key name="armory_game_championI_game_id_708280740e685d4e_fk_armory_game_id" columns="game_id" ref-table="armory_game" ref-schema="" ref-catalog="riotDatabase" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="armory_game_champions_id_293f8acb14b02ba1_fk_armory_champions_id" columns="champions_id" ref-table="armory_champions" ref-schema="" ref-catalog="riotDatabase" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <index name="game_id" unique="true" columns="champions_id"/>
+      <index name="armory_game_championId_6072f8b3" unique="false" columns="game_id"/>
+      <index name="armory_game_championId_efa7211e" unique="false" columns="champions_id"/>
+    </table>
+    <table name="armory_game_fellowPlayers" schema="" catalog="riotDatabase" type="TABLE">
+      <column name="id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="game_id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="summoners_id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <foreign-key name="armo_summoners_id_4156b373b82ebe2_fk_armory_summoners_summonerId" columns="summoners_id" ref-table="armory_summoners" ref-schema="" ref-catalog="riotDatabase" ref-columns="summonerId" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="armory_game_fellowPla_game_id_3c9bf7024d924aca_fk_armory_game_id" columns="game_id" ref-table="armory_game" ref-schema="" ref-catalog="riotDatabase" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <index name="game_id" unique="true" columns="summoners_id"/>
+      <index name="armory_game_fellowPlayers_47cce4ce" unique="false" columns="summoners_id"/>
+      <index name="armory_game_fellowPlayers_6072f8b3" unique="false" columns="game_id"/>
+    </table>
+    <table name="armory_game_stats" schema="" catalog="riotDatabase" type="TABLE">
+      <column name="id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="game_id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="participantstats_id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <foreign-key name="D83bf533b9c0b5222c4322673c29f235" columns="participantstats_id" ref-table="armory_participantstats" ref-schema="" ref-catalog="riotDatabase" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="armory_game_stats_game_id_645281ef46f26452_fk_armory_game_id" columns="game_id" ref-table="armory_game" ref-schema="" ref-catalog="riotDatabase" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <index name="game_id" unique="true" columns="participantstats_id"/>
+      <index name="armory_game_stats_6072f8b3" unique="false" columns="game_id"/>
+      <index name="armory_game_stats_89791f25" unique="false" columns="participantstats_id"/>
     </table>
     <table name="armory_items" schema="" catalog="riotDatabase" type="TABLE">
       <column name="id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
@@ -763,7 +810,7 @@
     <table name="armory_participant" schema="" catalog="riotDatabase" type="TABLE">
       <column name="id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" autoIncrement="true"/>
       <column name="championId" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
-      <column name="highestAchievedSeasonTier" sqlType="VARCHAR" precision="25" scale="0" nullable="false" jdbcType="12"/>
+      <column name="highestAchievedSeasonTier" sqlType="VARCHAR" precision="25" scale="0" nullable="true" jdbcType="12"/>
       <column name="spell1Id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
       <column name="spell2Id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
       <column name="teamId" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
@@ -774,7 +821,7 @@
     <table name="armory_participantstats" schema="" catalog="riotDatabase" type="TABLE">
       <column name="id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" autoIncrement="true"/>
       <column name="participant_id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
-      <column name="summonerName" sqlType="VARCHAR" precision="30" scale="0" nullable="false" jdbcType="12"/>
+      <column name="summonerName" sqlType="VARCHAR" precision="30" scale="0" nullable="true" jdbcType="12"/>
       <column name="champLevel" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
       <column name="combatPlayerScore" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
       <column name="deaths" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
@@ -837,22 +884,28 @@
       <column name="wardsKilled" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
       <column name="wardsPlaced" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
       <column name="winner" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="playerPosition" sqlType="INT" precision="10" scale="0" nullable="true" jdbcType="4"/>
+      <column name="playerRole" sqlType="INT" precision="10" scale="0" nullable="true" jdbcType="4"/>
+      <column name="turretsKilled" sqlType="INT" precision="10" scale="0" nullable="true" jdbcType="4"/>
       <primary-key name="PRIMARY" columns="id"/>
       <foreign-key name="participant_id_refs_id_068d297c" columns="participant_id" ref-table="armory_participant" ref-schema="" ref-catalog="riotDatabase" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <exported-key name="D83bf533b9c0b5222c4322673c29f235" table="armory_game_stats" schema="" catalog="riotDatabase" columns="participantstats_id"/>
     </table>
     <table name="armory_summoners" schema="" catalog="riotDatabase" type="TABLE">
       <column name="summonerId" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
       <column name="teamId" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="dateAdded" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
       <primary-key name="PRIMARY" columns="summonerId"/>
-      <exported-key name="summoners_id_refs_summonerId_25b444dd" table="armory_summoners_champion" schema="" catalog="riotDatabase" columns="summoners_id"/>
+      <exported-key name="armo_summoners_id_4156b373b82ebe2_fk_armory_summoners_summonerId" table="armory_game_fellowPlayers" schema="" catalog="riotDatabase" columns="summoners_id"/>
+      <exported-key name="arm_summoners_id_3fa05dcef72a1e9f_fk_armory_summoners_summonerId" table="armory_summoners_champion" schema="" catalog="riotDatabase" columns="summoners_id"/>
     </table>
     <table name="armory_summoners_champion" schema="" catalog="riotDatabase" type="TABLE">
       <column name="id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" autoIncrement="true"/>
       <column name="summoners_id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
       <column name="champions_id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
       <primary-key name="PRIMARY" columns="id"/>
-      <foreign-key name="summoners_id_refs_summonerId_25b444dd" columns="summoners_id" ref-table="armory_summoners" ref-schema="" ref-catalog="riotDatabase" ref-columns="summonerId" update-rule="3" delete-rule="3" deferrability="2"/>
-      <foreign-key name="champions_id_refs_id_18495cc0" columns="champions_id" ref-table="armory_champions" ref-schema="" ref-catalog="riotDatabase" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="arm_summoners_id_3fa05dcef72a1e9f_fk_armory_summoners_summonerId" columns="summoners_id" ref-table="armory_summoners" ref-schema="" ref-catalog="riotDatabase" ref-columns="summonerId" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="armory_summ_champions_id_3af87169461a32f4_fk_armory_champions_id" columns="champions_id" ref-table="armory_champions" ref-schema="" ref-catalog="riotDatabase" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
       <index name="summoners_id" unique="true" columns="champions_id"/>
       <index name="armory_summoners_champion_7e31dbaf" unique="false" columns="summoners_id"/>
       <index name="armory_summoners_champion_b28bc634" unique="false" columns="champions_id"/>

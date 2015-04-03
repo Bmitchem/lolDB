@@ -17,3 +17,4 @@ class Command(BaseCommand):
             else:
                 print "Importing history for " + str(summoner.summonerId)
                 ri.import_summoner_id_from_pull(summoner.summonerId)
+                time.sleep(3)
