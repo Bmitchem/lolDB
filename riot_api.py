@@ -131,6 +131,20 @@ class RiotInterface(object):
         else:
             raise Exception
 
+    def update_free_champions(self):
+        from django.core.exceptions import ObjectDoesNotExist
+        champion_list=self.get_champions().json()
+        for champion in champion_list['champions']:
+            try:
+                champ = models.Champions.objects.get(id=champion['id'])
+                champ.freeToPlay = champion['freeToPlay']
+                champ.save()
+                if champion['freeToPlay']:
+                    print "%s is free this week! " % champ.name
+            except ObjectDoesNotExist:
+                print "shit's broke"
+                continue
+
     def update_champions(self):
         import json
 
