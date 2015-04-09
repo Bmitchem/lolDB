@@ -136,7 +136,7 @@ class Items(models.Model):
 class Summoners(models.Model):
     summonerId = models.IntegerField(default=0, primary_key=True)
     teamId = models.IntegerField(default=0, null=True)
-    champion = models.ManyToManyField(Champions, null=True)
+    champion = models.ManyToManyField(Champions)
     dateAdded = models.DateTimeField(auto_now=True, null=True)
 
 class Game(models.Model):
@@ -145,12 +145,12 @@ class Game(models.Model):
     gameMode=models.CharField(max_length=50, null=False),
     gameType=models.CharField(max_length=50),
     mapId=models.IntegerField(default=0)
-    championId=models.ManyToManyField(Champions, null=True)
+    championId=models.ManyToManyField(Champions)
     spell1=models.IntegerField(default=0)
     spell2=models.IntegerField(default=0)
-    fellowPlayers=models.ManyToManyField(Participant, null=True)
+    fellowPlayers=models.ManyToManyField(Participant)
     ipEarned=models.IntegerField(default=0)
-    stats=models.ManyToManyField(ParticipantStats, null=True)
+    stats=models.ManyToManyField(ParticipantStats)
     matchCreation=models.DateTimeField()
 
 
@@ -162,7 +162,7 @@ class MatchSummary(models.Model):
     matchMode = models.CharField(max_length=256)
     matchType = models.CharField(max_length=256)
     matchVersion = models.CharField(max_length=256)
-    participants = models.ManyToManyField(Summoners, null=True)
+    participants = models.ManyToManyField(Summoners)
     platformId = models.CharField(max_length=256)
     queueType = models.CharField(max_length=75)
     region = models.CharField(max_length=10)
