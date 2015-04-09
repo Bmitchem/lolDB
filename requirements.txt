@@ -1,0 +1,6 @@
+Django==1.7.7
+MySQL-python==1.2.5
+argparse==1.2.1
+pygal==1.7.0
+requests==2.6.0
+wsgiref==0.1.2
