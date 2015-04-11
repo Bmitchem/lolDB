@@ -274,7 +274,8 @@ class RiotInterface(object):
                     new_match.save()
 
                 new_match.championId.add(champ)
-                pprint(new_match)
+                if new:
+                    print "Saving a new match! It was a: %s type game" % game['gameMode']
 
                 player = models.Participant.objects.get_or_create(summonerId=summonerId,
                                                                   defaults={
