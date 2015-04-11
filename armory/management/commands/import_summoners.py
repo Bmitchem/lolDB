@@ -6,12 +6,11 @@ from time import sleep
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        summoner_list = models.Summoners.objects.all().order_by('-dateAdded')
+        summoner_list = models.Summoners.objects.all().order_by('-summonerId')
 
         ri = RiotInterface()
         for index, summoner in enumerate(summoner_list):
             print "Importing history for " + str(summoner.summonerId)
             ri.import_summoner_id_from_pull(summoner.summonerId)
-            sleep(10)
 
         # ri.import_summoner_id_from_pull(25500646)
