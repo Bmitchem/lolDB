@@ -137,7 +137,7 @@ class Summoners(models.Model):
     summonerId = models.IntegerField(default=0, primary_key=True)
     teamId = models.IntegerField(default=0, null=True)
     champion = models.ManyToManyField(Champions)
-    dateAdded = models.DateTimeField(auto_now=True, null=True)
+    dateAdded = models.DateTimeField(null=True)
 
 class Game(models.Model):
     summonerId=models.IntegerField(default=0)
