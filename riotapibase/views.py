@@ -12,7 +12,7 @@ from django.views.decorators.cache import cache_page
 def index(request):
     #list of current games
 
-    champs = models.Champions.objects.filter(freeToPlay=1)
+    champs = models.Champions.objects.filter(freeToPlay=1)[:2]
     champ_list = models.Champions.objects.all()
     champ_list.all()
     # graph = utils.ward_win_graph()

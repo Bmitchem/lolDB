@@ -351,7 +351,8 @@ class RiotInterface(object):
                     neutralMinionsKilledTeamJungle=stats.get('neutralMinionsKilledYourJungle', 0),
                     totalTimeCrowdControlDealt=stats.get('totalTimeCrowdControlDealt', 0),
                     playerRole=stats.get('playerRole', 0),
-                    playerPosition=stats.get('playerPosition', 0)
+                    playerPosition=stats.get('playerPosition', 0),
+                    championId=game['championId'],
 
                 )
                 new_stats.participant.add(

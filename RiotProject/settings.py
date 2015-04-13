@@ -38,7 +38,8 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'riotapibase',
-    'armory'
+    'armory',
+    'debug_toolbar',
 )
 
 MIDDLEWARE_CLASSES = (

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="DataSourceManagerImpl" format="xml" hash="1779908433">
+  <component name="DataSourceManagerImpl" format="xml" hash="1818219180">
     <data-source source="LOCAL" name="MySQL - @localhost" uuid="0f83ab68-488a-4ff8-b512-653a22718356">
       <driver-ref>mysql</driver-ref>
       <synchronize>true</synchronize>
@@ -28,6 +28,27 @@
         <property name="yearIsDateType" value="false" />
       </driver-properties>
       <libraries />
+    </data-source>
+    <data-source source="LOCAL" name="Django default" uuid="176bd0eb-edf4-4416-a9f3-b774b1f7f7a9">
+      <driver-ref>mysql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://127.0.0.1/riotDatabase</jdbc-url>
+      <driver-properties>
+        <property name="zeroDateTimeBehavior" value="convertToNull" />
+        <property name="tinyInt1isBit" value="false" />
+        <property name="characterEncoding" value="utf8" />
+        <property name="characterSetResults" value="utf8" />
+        <property name="yearIsDateType" value="false" />
+      </driver-properties>
+      <libraries>
+        <library>
+          <url>file://$APPLICATION_CONFIG_DIR$/jdbc-drivers/mysql-connector-license.txt</url>
+        </library>
+        <library>
+          <url>file://$APPLICATION_CONFIG_DIR$/jdbc-drivers/mysql-connector-java-5.1.34-bin.jar</url>
+        </library>
+      </libraries>
     </data-source>
   </component>
 </project>

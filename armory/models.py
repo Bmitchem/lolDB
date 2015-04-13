@@ -4,7 +4,7 @@ import numpy
 
 class Participant(models.Model):
     summonerId =  models.IntegerField(primary_key=True)
-    champion = models.IntegerField(default=0)
+    champion = models.IntegerField(default=0, db_index=True)
     highestAchievedSeasonTier = models.CharField(max_length=25, null=True)
     spell1Id = models.IntegerField(default=0)
     spell2Id = models.IntegerField(default=0)
@@ -13,9 +13,10 @@ class Participant(models.Model):
 
 
 class ParticipantStats(models.Model):
-    participant = models.ManyToManyField(Participant)
+    participant = models.ManyToManyField(Participant, db_index=True)
     summonerName = models.CharField(max_length=30, null=True)
     champLevel = models.IntegerField(default=0)
+    championId = models.IntegerField(default=0)
     combatPlayerScore = models.IntegerField(default=0)
     deaths = models.IntegerField(default=0)
     assists = models.IntegerField(default=0)
@@ -76,7 +77,7 @@ class ParticipantStats(models.Model):
     visionWardsBoughtInGame = models.IntegerField(default=0)
     wardsKilled = models.IntegerField(default=0)
     wardsPlaced = models.IntegerField(default=0)
-    winner = models.IntegerField(default=0)
+    winner = models.IntegerField(default=0, db_index=True)
     turretsKilled = models.IntegerField(default=0, null=True)
     playerPosition = models.IntegerField(default=0, null=True)
     playerRole = models.IntegerField(default=0, null=True)
@@ -125,24 +126,7 @@ class Champions(models.Model):
     skins = models.ManyToManyField(ChampionSkins)
     tag = models.ManyToManyField(ChampionTags)
     stats = models.ManyToManyField(ChampionStats)
-
-    @property
-    def winrate(self):
-        games = []
-        player_stats = ParticipantStats.objects.all()
-        for ps in player_stats:
-            player = ps.participant.all()[0]
-            if ps.winner:
-
-                if player.champion == self.id:
-                    games.append(ps.winner)
-            else:
-                if player.champion == self.id:
-                    games.append(ps.winner)
-        if games:
-            return numpy.mean(games) * 100
-        else:
-            return "Not yet Recorded"
+    winrate = models.DecimalField(default=0, decimal_places=2, max_digits=4)
 
 
 
