@@ -6,7 +6,7 @@ from time import sleep
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        summoner_list = models.Summoners.objects.all().order_by('-summonerId')
+        summoner_list = models.Summoners.objects.all().order_by('-dateAdded')
 
         ri = RiotInterface()
         for index, summoner in enumerate(summoner_list):
