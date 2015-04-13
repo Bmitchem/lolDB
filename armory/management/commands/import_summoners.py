@@ -12,7 +12,8 @@ class Command(BaseCommand):
         ri = RiotInterface()
         counter = 0
         for index, summoner in enumerate(summoner_list):
-            if counter < 10:
+            counter += 1
+            if counter < 30:
                 print "Importing history for " + str(summoner.summonerId)
                 ri.import_summoner_id_from_pull(summoner.summonerId)
             else:
