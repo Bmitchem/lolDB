@@ -268,10 +268,10 @@ class RiotInterface(object):
                                                                          'spell2': game['spell2'],
 
                                                                      })
-                if new:
-                    new_match.gameType=game['gameType']
-                    new_match.gameMode=game['gameMode']
-                    new_match.save()
+
+                new_match.gameType=game['gameType']
+                new_match.gameMode=game['gameMode']
+                new_match.save()
 
                 new_match.championId.add(champ)
                 if new:

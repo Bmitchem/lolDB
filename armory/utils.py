@@ -29,10 +29,20 @@ def ward_win_graph():
     line_chart.add('Wards Placed', ward_placed_wins[1:26:])
     return line_chart.render()
 
-# def champ_win_graph():
-#         player_win_stats = models.ParticipantStats.objects.filter(winner=1)
-#
-#         champ_placed_wins = {}
-#
-#         for win in player_win_stats:
+def game_type_graph():
+    games = models.Game.objects.all()
+    total_games = len(games)
+    classic_games = float(len(models.Game.objects.get(gameMode='CLASSIC'))) / float(games) * 100
+    aram_games = float(len(models.Game.objects.get(gameMode='ARAM'))) / float(games) * 100
+    dominion_games = float(len(models.Game.objects.get(gameMode='ODIN'))) / float(games) * 100
+
+
+
+
+    pie_chart = pygal.Pie()
+    pie_chart.title = 'Game Mode selection (in %)'
+    pie_chart.add('Summoner\'s Rift', classic_games)
+    pie_chart.add('ARAM', aram_games)
+    pie_chart.add('Dominion', dominion_games)
+    pie_chart.render()
 

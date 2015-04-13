@@ -125,6 +125,10 @@ class Champions(models.Model):
     tag = models.ManyToManyField(ChampionTags)
     stats = models.ManyToManyField(ChampionStats)
 
+    @property
+    def winrate(self):
+        pass
+
 
 class Items(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -141,9 +145,9 @@ class Summoners(models.Model):
 
 class Game(models.Model):
     summonerId=models.IntegerField(default=0)
-    gameId=models.IntegerField(primary_key=True),
-    gameMode=models.CharField(max_length=50, null=False),
-    gameType=models.CharField(max_length=50),
+    gameId=models.IntegerField(primary_key=True)
+    gameMode=models.CharField(max_length=50, null=False)
+    gameType=models.CharField(max_length=50)
     mapId=models.IntegerField(default=0)
     championId=models.ManyToManyField(Champions)
     spell1=models.IntegerField(default=0)

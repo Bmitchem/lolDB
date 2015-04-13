@@ -11,9 +11,9 @@ def index(request):
     #list of current games
 
     champs = models.Champions.objects.filter(freeToPlay=1)
-    ward_graph = utils.ward_win_graph()
+    # ward_graph = utils.ward_win_graph()
+    map_graph = utils.game_type_graph()
 
 
-
-    return render_to_response('index.html', {'champions' : champs, 'graph': ward_graph})
+    return render_to_response('index.html', {'champions' : champs, 'graph': map_graph})
 
