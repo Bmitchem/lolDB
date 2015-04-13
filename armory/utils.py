@@ -32,17 +32,17 @@ def ward_win_graph():
 def game_type_graph():
     games = models.Game.objects.all()
     total_games = len(games)
-    classic_games = float(len(models.Game.objects.get(gameMode='CLASSIC'))) / float(games) * 100
-    aram_games = float(len(models.Game.objects.get(gameMode='ARAM'))) / float(games) * 100
-    dominion_games = float(len(models.Game.objects.get(gameMode='ODIN'))) / float(games) * 100
+    classic_games = float(len(models.Game.objects.filter(gameMode='CLASSIC'))) / float(total_games) * 100
+    aram_games = float(len(models.Game.objects.filter(gameMode='ARAM'))) / float(total_games) * 100
+    dominion_games = float(len(models.Game.objects.filter(gameMode='ODIN'))) / float(total_games) * 100
 
 
 
-
-    pie_chart = pygal.Pie()
+    from pygal.style import LightStyle
+    pie_chart = pygal.Pie(style=LightStyle)
     pie_chart.title = 'Game Mode selection (in %)'
     pie_chart.add('Summoner\'s Rift', classic_games)
     pie_chart.add('ARAM', aram_games)
     pie_chart.add('Dominion', dominion_games)
-    pie_chart.render()
+    return pie_chart.render()
 

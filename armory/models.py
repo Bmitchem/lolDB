@@ -1,5 +1,6 @@
 __author__ = 'bob'
 from django.db import models
+import numpy
 
 class Participant(models.Model):
     summonerId =  models.IntegerField(primary_key=True)
@@ -127,7 +128,22 @@ class Champions(models.Model):
 
     @property
     def winrate(self):
-        pass
+        games = []
+        player_stats = ParticipantStats.objects.all()
+        for ps in player_stats:
+            player = ps.participant.all()[0]
+            if ps.winner:
+
+                if player.champion == self.id:
+                    games.append(ps.winner)
+            else:
+                if player.champion == self.id:
+                    games.append(ps.winner)
+        if games:
+            return numpy.mean(games) * 100
+        else:
+            return "Not yet Recorded"
+
 
 
 class Items(models.Model):

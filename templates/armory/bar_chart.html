@@ -41,7 +41,7 @@
                         <tr>
                             <td>{{ champion.name }}</td>
                             <td>{% for tag in champion.tag.all %}{{ tag.tag }} {% endfor %}</td>
-                            <td>50%</td>
+                            <td>{{ champion.winrate }}</td>
                         </tr>
                         {% endfor %}
                         </tbody>

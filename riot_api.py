@@ -293,6 +293,7 @@ class RiotInterface(object):
                                                                              defaults={
                                                                                  'teamId': players['teamId'],
                                                                              })
+                    participant.champion = champ.id
                     participant.save()
                     summoner = models.Summoners.objects.get_or_create(summonerId=players['summonerId'],
                                                                       defaults={
