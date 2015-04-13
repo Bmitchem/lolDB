@@ -12,7 +12,7 @@ class Command(BaseCommand):
         summoner_list = models.Summoners.objects.all().order_by('-dateAdded')
         query_set = []
         for i in range(30):
-            query_set.append(summoner_list(random.randint(0,len(summoner_list))))
+            query_set.append(summoner_list[random.randint(0,len(summoner_list))])
 
         ri = RiotInterface()
         counter = 0
