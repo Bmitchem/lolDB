@@ -258,7 +258,7 @@ class RiotInterface(object):
             try:
 
                 champ = models.Champions.objects.get(id=game['championId'])
-                new_match, new = models.Game.objects.get_or_create(id=game['gameId'],
+                new_match, new = models.Game.objects.get_or_create(gameId=game['gameId'],
                                                                      defaults={
                                                                          'mapId': game['mapId'],
                                                                          'matchCreation': datetime.fromtimestamp(game['createDate'] / 1000.0),
