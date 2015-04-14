@@ -15,12 +15,10 @@ class Command(BaseCommand):
             query_set.append(summoner_list[random.randint(0,len(summoner_list))])
 
         ri = RiotInterface()
-        counter = 0
+
         for index, summoner in enumerate(query_set):
-            counter += 1
-            if counter < 30:
-                print "Importing history for " + str(summoner.summonerId)
-                ri.import_summoner_id_from_pull(summoner.summonerId)
-            else:
-                sys.exit()
+            print "Importing history for " + str(summoner.summonerId)
+            ri.import_summoner_id_from_pull(summoner.summonerId)
+            summoners_left = len(query_set) - index
+            print "Completed %d, we have %d summoners left in this run" % (index, summoners_left)
         # ri.import_summoner_id_from_pull(25500646)
