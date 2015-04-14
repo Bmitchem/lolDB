@@ -10,7 +10,7 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-from keys import RIOT_API_KEY
+from keys import RIOT_API_KEY, DATABASES
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
@@ -59,13 +59,7 @@ WSGI_APPLICATION = 'RiotProject.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'riotDatabase',
-        'USER': 'root',
-    }
-}
+
 
 #mysql -u bmitchem -hriotdb.cyafaij0s6ly.us-west-2.rds.amazonaws.com -P 3306 -p riotDatabase< ritodb.sql
 
