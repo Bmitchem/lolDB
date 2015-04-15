@@ -17,5 +17,11 @@ def index(request):
     graph = utils.game_type_graph()
 
 
-    return render_to_response('index.html', {'champions' : champs, 'graph': graph, 'champ_list': champ_list})
+    return render_to_response('index.html', {
+        'champions' : champs,
+        'graph': graph,
+        'champ_list': champ_list,
+        'page_title': 'Dashboard',
+        'body_title': 'Chart of the Day!',
+    })
 
