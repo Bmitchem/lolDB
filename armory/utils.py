@@ -54,3 +54,57 @@ def game_type_graph():
     pie_chart.add('Dominion', dominion_games)
     return pie_chart.render()
 
+def champion_damage_distribution(champion):
+    player_stats = models.ParticipantStats.objects.all().filter(championId=champion).values('physicalDamageDealtToChampions',
+                                                                                 'magicDamageDealtToChampions',
+                                                                                 'trueDamageDealtToChampions',
+                                                                                 'totalDamageDealtToChampions')
+    total_damage = champion_total_damage(player_stats)
+    phys_damage = champion_damage_physical(player_stats)
+    magic_damage = champion_damage_magic(player_stats)
+    true_damage = champion_damage_true(player_stats)
+
+
+
+
+
+    from pygal.style import LightStyle
+    pie_chart = pygal.Pie(style=LightStyle)
+    pie_chart.title = 'Damage Distribution (in %)'
+    if phys_damage:
+        pie_chart.add('Physical Damage', phys_damage / float(total_damage))
+    if magic_damage:
+        pie_chart.add('Magic Damage', magic_damage / float(total_damage))
+    if true_damage:
+        pie_chart.add('True Damage', true_damage / float(total_damage))
+    return pie_chart.render()
+
+def champion_damage_physical(relevant_player_stats):
+    physical_damage_per_game = []
+    for game in relevant_player_stats:
+        physical_damage_per_game.append(game['physicalDamageDealtToChampions'])
+        
+    return np.mean(physical_damage_per_game)
+
+
+def champion_damage_true(relevant_player_stats):
+    true_damage_per_game = []
+    for game in relevant_player_stats:
+        true_damage_per_game.append(game['trueDamageDealtToChampions'])
+        
+    return np.mean(true_damage_per_game)
+
+def champion_damage_magic(relevant_player_stats):
+    magic_damage_per_game = []
+    for game in relevant_player_stats:
+        magic_damage_per_game.append(game['magicDamageDealtToChampions'])
+        
+    return np.mean(magic_damage_per_game)
+
+def champion_total_damage(relevant_player_stats):
+    total_damage_per_game = []
+    for game in relevant_player_stats:
+        total_damage_per_game.append(game['totalDamageDealtToChampions'])
+        
+    return np.mean(total_damage_per_game)
+
