@@ -29,18 +29,25 @@ def game_ward_win(ward_num, player_stats):
 
 
 def game_type_graph():
+    rift_maps = (1, 2, 11)
+    treeline_maps = (4, 10)
     games = models.Game.objects.all()
-    games = games.values('gameMode')
+    games = games.values('gameMode', 'mapId')
     total_games = len(games)
-    classic, aram, dominion = 0, 0, 0
+    rift, treeline, aram, dominion = 0, 0, 0, 0
     for g in games:
         if g['gameMode'] == 'CLASSIC':
-            classic += 1
+            if g.get('mapId', 0) in rift_maps:
+                rift += 1
+            elif g.get('mapId', 0) in treeline_maps:
+                treeline += 1
         elif g['gameMode'] == 'ARAM':
             aram += 1
         elif g['gameMode'] == 'ODIN':
             dominion += 1
-    classic_games = float(classic) / float(total_games) * 100
+
+    rift_games = float(rift) / float(total_games) * 100
+    treeline_games = float(treeline) / float(total_games) * 100
     aram_games = float(aram) / float(total_games) * 100
     dominion_games = float(dominion) / float(total_games) * 100
 
@@ -49,7 +56,8 @@ def game_type_graph():
     from pygal.style import LightStyle
     pie_chart = pygal.Pie(style=LightStyle)
     pie_chart.title = 'Game Mode selection (in %)'
-    pie_chart.add('Summoner\'s Rift', classic_games)
+    pie_chart.add('Summoner\'s Rift', rift_games)
+    pie_chart.add('Twisted Treeline', treeline_games)
     pie_chart.add('ARAM', aram_games)
     pie_chart.add('Dominion', dominion_games)
     return pie_chart.render()
@@ -107,4 +115,34 @@ def champion_total_damage(relevant_player_stats):
         total_damage_per_game.append(game['totalDamageDealtToChampions'])
         
     return np.mean(total_damage_per_game)
+
+def champion_map_winrate(champion_id):
+    relevant_games = models.Game.objects.filter(championId=champion_id).prefetch_related('stats')
+    player_stats = models.ParticipantStats.objects.filter(champion_id=champion_id).values('summoner')
+    aram_winrate = get_champion_map_winrate('ARAM', relevant_games)
+    classic_winrate = get_champion_map_winrate('CLASSIC', relevant_games)
+    domin_winrate = get_champion_map_winrate('CLASSIC', relevant_games)
+
+    from pygal.style import LightStyle
+    pie_chart = pygal.Pie(style=LightStyle)
+    pie_chart.title = 'Damage Distribution (in %)'
+    if aram_winrate:
+        pie_chart.add('Aram Winrate', aram_winrate / float(len(relevant_games)))
+    if classic_winrate:
+        pie_chart.add('Classic Winrate', classic_winrate / float(len(relevant_games)))
+    if domin_winrate:
+        pie_chart.add('Dominion Winrate', domin_winrate / float(len(relevant_games)))
+    return pie_chart.render()
+
+def get_champion_map_winrate(map, relevant_games):
+    win_rate = []
+    for game in relevant_games:
+        if game.gameMode == map:
+
+                win_rate.append(stat.winner)
+    return np.mean(win_rate) * 100
+
+
+
+
 

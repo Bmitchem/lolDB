@@ -13,6 +13,7 @@ class Participant(models.Model):
 
 
 class ParticipantStats(models.Model):
+    summonerId = models.IntegerField(default=0)
     participant = models.ManyToManyField(Participant, db_index=True)
     summonerName = models.CharField(max_length=30, null=True)
     champLevel = models.IntegerField(default=0)

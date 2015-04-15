@@ -309,6 +309,7 @@ class RiotInterface(object):
 
                 stats = game['stats']
                 new_stats, trash = models.ParticipantStats.objects.get_or_create(
+                    summonerId=players['summonerId'],
                     champLevel=stats.get('level', 0),
                     goldEarned=stats.get('goldEarned', 0),
                     deaths=stats.get('numDeaths', 0),
@@ -357,6 +358,7 @@ class RiotInterface(object):
                 )
                 new_stats.participant.add(
                         models.Participant.objects.get(summonerId=summonerId),)
+                new_match.stats.add(new_stats)
 
             except KeyError as e:
                 print "Out of API sleeping"
