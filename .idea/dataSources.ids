@@ -1515,6 +1515,7 @@
       <column name="botMmEnabled" sqlType="TINYINT" precision="3" scale="0" nullable="true" jdbcType="-6"/>
       <column name="rankedPlayEnabled" sqlType="TINYINT" precision="3" scale="0" nullable="true" jdbcType="-6"/>
       <column name="name" sqlType="VARCHAR" precision="256" scale="0" nullable="false" jdbcType="12"/>
+      <column name="winrate" sqlType="DECIMAL" precision="4" scale="2" nullable="false" jdbcType="3"/>
       <primary-key name="PRIMARY" columns="id"/>
       <exported-key name="armory_cham_champions_id_2a558f90a1636d8b_fk_armory_champions_id" table="armory_champions_skins" schema="" catalog="riotDatabase" columns="champions_id"/>
       <exported-key name="armory_cham_champions_id_2883d393367cf486_fk_armory_champions_id" table="armory_champions_stats" schema="" catalog="riotDatabase" columns="champions_id"/>
@@ -1751,6 +1752,7 @@
       <column name="playerRole" sqlType="INT" precision="10" scale="0" nullable="true" jdbcType="4"/>
       <column name="timePlayed" sqlType="INT" precision="10" scale="0" nullable="true" jdbcType="4"/>
       <column name="team" sqlType="INT" precision="10" scale="0" nullable="true" jdbcType="4"/>
+      <column name="championId" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
       <primary-key name="PRIMARY" columns="id"/>
       <exported-key name="D83bf533b9c0b5222c4322673c29f235" table="armory_game_stats" schema="" catalog="riotDatabase" columns="participantstats_id"/>
       <exported-key name="D46c6c25cb395e352e9e84f8f370f616" table="armory_participantstats_participant" schema="" catalog="riotDatabase" columns="participantstats_id"/>

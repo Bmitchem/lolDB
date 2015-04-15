@@ -8,14 +8,12 @@ import pygal
 from armory import utils
 from django.views.decorators.cache import cache_page
 
-@cache_page(60*15)
+# @cache_page(60*15)
 def index(request):
     #list of current games
 
-    champs = models.Champions.objects.filter(freeToPlay=1)
+    champs = models.Champions.objects.filter(freeToPlay=1).order_by('-winrate')
     champ_list = models.Champions.objects.all()
-    champ_list.all()
-    # graph = utils.ward_win_graph()
     graph = utils.game_type_graph()
 
 
