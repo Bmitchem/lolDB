@@ -3,6 +3,8 @@ import pygal
 from riot_api import RiotInterface
 from armory import models
 import numpy as np
+from sets import Set
+
 
 def ward_win_graph():
     player_win_stats = models.ParticipantStats.objects.all()
@@ -140,6 +142,37 @@ def get_champion_map_winrate(map, relevant_games):
             pass
                 # win_rate.append(stat.winner)
     return np.mean(win_rate) * 100
+
+def champion_item_builds(championId):
+    relevant_stats = models.ParticipantStats.objects.filter(championId=championId)
+    items = models.Items.objects.all().values('id', 'name', 'description')
+    built_item_names = []
+    for item in items:
+        item_names = {
+            'id':{
+                'name': item['name'],
+                'desc': item['description'],
+            }
+        }
+        built_item_names.append(item_names)
+    builds = []
+    for game in relevant_stats:
+
+        build = Set([
+            game.item0,
+            game.item1,
+            game.item2,
+            game.item3,
+            game.item4,
+            game.item5,
+            game.item6,
+        ])
+        builds.append(build)
+
+
+
+    return builds
+
 
 
 

@@ -8,3 +8,4 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         ri = RiotInterface()
         ri.update_champions()
+        ri.update_items()

@@ -116,7 +116,6 @@ class ChampionStats(models.Model):
     spellblock = models.IntegerField(default=0)
     spellblockperlevel = models.IntegerField(default=0)
 
-
 class Champions(models.Model):
     id = models.IntegerField(primary_key=True)
     active = models.NullBooleanField(default=True, null=True)
@@ -128,8 +127,6 @@ class Champions(models.Model):
     tag = models.ManyToManyField(ChampionTags)
     stats = models.ManyToManyField(ChampionStats)
     winrate = models.DecimalField(default=0, decimal_places=2, max_digits=4)
-
-
 
 class Items(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -153,7 +150,7 @@ class Game(models.Model):
     championId=models.ManyToManyField(Champions)
     spell1=models.IntegerField(default=0)
     spell2=models.IntegerField(default=0)
-    fellowPlayers=models.ManyToManyField(Participant)
+    fellowPlayers=models.ManyToManyField(Participant, db_index=True)
     ipEarned=models.IntegerField(default=0)
     stats=models.ManyToManyField(ParticipantStats)
     matchCreation=models.DateTimeField()
