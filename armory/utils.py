@@ -129,7 +129,7 @@ def champion_map_winrate(champion_id):
 
     from pygal.style import LightStyle
     pie_chart = pygal.Pie(style=LightStyle)
-    pie_chart.title = 'Damage Distribution (in %)'
+    pie_chart.title = 'Champion Winrate per Map (in %)'
     if aram_winrate:
         pie_chart.add('Aram Winrate', aram_winrate / float(champ_global_winrate.winrate))
     if classic_winrate:
