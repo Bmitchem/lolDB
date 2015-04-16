@@ -7,6 +7,6 @@ urlpatterns = patterns('',
     # url(r'^$', 'RiotProject.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
 
-    url(r'^champion/(?P<champion_id>\w+)/$', views.champion),
+    url(r'^champion/(?P<champion_Id>\w+)/$', views.champion, name='championId'),
 
 )

@@ -118,7 +118,6 @@ def champion_total_damage(relevant_player_stats):
 
 def champion_map_winrate(champion_id):
     relevant_games = models.Game.objects.filter(championId=champion_id).prefetch_related('stats')
-    player_stats = models.ParticipantStats.objects.filter(champion_id=champion_id).values('summoner')
     aram_winrate = get_champion_map_winrate('ARAM', relevant_games)
     classic_winrate = get_champion_map_winrate('CLASSIC', relevant_games)
     domin_winrate = get_champion_map_winrate('CLASSIC', relevant_games)
@@ -138,8 +137,8 @@ def get_champion_map_winrate(map, relevant_games):
     win_rate = []
     for game in relevant_games:
         if game.gameMode == map:
-
-                win_rate.append(stat.winner)
+            pass
+                # win_rate.append(stat.winner)
     return np.mean(win_rate) * 100
 
 
