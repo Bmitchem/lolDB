@@ -155,12 +155,13 @@ class RiotInterface(object):
             champion = champion_list['data'].get(key)
             print("processing champion: ", champion.get('name'))
 
-            c = models.Champions.objects.get_or_create(id=champion.get('id'),
+            c, new = models.Champions.objects.get_or_create(id=champion.get('id'),
                                                        defaults={
                                                            'name': champion.get('name'),
-                                                       })[0]
+                                                       })
 
-
+            c.image = champion.get('image').get('full')
+            c.save()
             stats_info = champion['stats']
             stats = models.ChampionStats.objects.get_or_create(championId=champion.get('id'),
                                                                defaults={

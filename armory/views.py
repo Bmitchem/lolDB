@@ -29,6 +29,7 @@ def champion(request, champion_Id):
 
 
 
+
     return render_to_response('armory/champion.html', {
         'champ': picked_champion['name'],
         'champion_damage': damage_graph,
@@ -37,5 +38,6 @@ def champion(request, champion_Id):
         'champions': champs,
         'page_title': picked_champion['name'],
         'body_title': '%s\'s Vital Stats' % picked_champion['name'],
+        'page_title_image': picked_champion['image']
 
     })
