@@ -20,6 +20,7 @@ def champion(request, champion_Id):
     champs = models.Champions.objects.filter(freeToPlay=1).order_by('-winrate')
     champ_list = models.Champions.objects.all().values()
     damage_graph = utils.champion_damage_distribution(champion_Id)
+    game_mode_winrate = utils.champion_map_winrate(champion_Id)
     for champ in champ_list:
         if champ['id'] == int(champion_Id):
             picked_champion = champ
@@ -31,7 +32,7 @@ def champion(request, champion_Id):
     return render_to_response('armory/champion.html', {
         'champ': picked_champion['name'],
         'champion_damage': damage_graph,
-        # 'game_mode_winrate': game_mode_winrate,
+        'game_mode_winrate': game_mode_winrate,
         'champ_list': champ_list,
         'champions': champs,
         'page_title': picked_champion['name'],

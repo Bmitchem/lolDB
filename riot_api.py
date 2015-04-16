@@ -234,7 +234,7 @@ class RiotInterface(object):
                                                             'plaintext': items.get('data')[key].get('plaintext', None)
                                                         })
 
-    def summoner_id_pull(self, summonerId):
+    def qsummoner_id_pull(self, summonerId):
         resp = requests.get('https://na.api.pvp.net/api/lol/na/v1.3/game/by-summoner/%d/recent?api_key=%s' %
                             (summonerId, settings.RIOT_API_KEY))
 

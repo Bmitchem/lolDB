@@ -2,21 +2,22 @@
 
 {% block body_block %}
 
-    <div class="col-lg-8">
+    <div class="col-lg-4">
         <div class="panel panel-default">
-            <div class="panel-heading">
-                <i class="fa fa-bar-chart-o fa-fw"></i> {{ champ.name }}
-
-
-                {{ champion_damage|safe }}
+            <div class="panel-heading"><i class="fa fa-bar-chart-o fa-fw"></i>
+                Champion Damage Distribution Chart
             </div>
-            <div class="panel-heading">
-                <i class="fa fa-bar-chart-o fa-fw"></i> {{ champ.name }}
+            {{ champion_damage|safe }}
+        </div>
+        </div>
+    <div class="col-lg-4">
+        <div class="panel panel-default">
 
-
-                {{ game_mode_winrate|safe }}
+            <div class="panel-heading"><i class="fa fa-bar-chart-o fa-fw"></i>
+                Champion Winrate by map
             </div>
-
+            {{ game_mode_winrate|safe }}
         </div>
     </div>
+
 {% endblock %}
