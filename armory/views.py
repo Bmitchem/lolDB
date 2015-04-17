@@ -12,6 +12,8 @@ from armory import utils
 import models
 from django.views.decorators.cache import cache_page
 from django.template import Context, Template
+from django.template.defaultfilters import slugify
+from django.http import HttpResponse
 
 
 # @cache_page(60 * 15)
@@ -41,3 +43,40 @@ def champion(request, champion_Id):
         'page_title_image': picked_champion['image']
 
     })
+
+def champion_search(request):
+    context = RequestContext(request)
+    champ_list = []
+    starts_with = ''
+    if request.method == 'GET':
+        starts_with = request.GET['suggestion']
+
+    champ_list = get_champion_list_suggest(8, starts_with=starts_with)
+
+    template = Template("""
+
+                        {% for champ in  champ_list %}
+                        <li>
+                            <a href="/armory/champion/{{ champ.id }}">{{ champ.name }}</a>
+                        </li>
+                        {% endfor %}
+                        </div>
+        """)
+    context = Context({'champ_list': champ_list, 'search_completed': bool(champ_list), })
+
+    return HttpResponse(template.render(context))
+
+
+
+def get_champion_list_suggest(max_results=0, starts_with=''):
+    champ_list = []
+    if starts_with:
+        champ_list = models.Champions.objects.filter(name__istartswith=starts_with)
+    else:
+        champ_list = []
+
+    if max_results > 0:
+        if len(champ_list) > max_results:
+            champ_list = champ_list[:max_results]
+
+    return champ_list

@@ -9,4 +9,6 @@ urlpatterns = patterns('',
 
     url(r'^champion/(?P<champion_Id>\w+)/$', views.champion, name='championId'),
 
+    url(r'^champion_search/$', views.champion_search, name='suggestion'),
+
 )

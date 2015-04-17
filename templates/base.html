@@ -16,7 +16,7 @@
     <link href="http://ironsummitmedia.github.io/startbootstrap-sb-admin-2/bower_components/bootstrap/dist/css/bootstrap.min.css"/>
     <!-- Bootstrap Core CSS -->
     <link href="{% static 'bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
-    <link href="{% static 'bootstrap/js/modal.js' %}" rel="stylesheet">
+    <script src="{% static 'bootstrap/js/modal.js' %}"></script>
 
     <!-- MetisMenu CSS -->
     <link href="{% static 'metisMenu/dist/metisMenu.min.css' %}" rel="stylesheet">
@@ -282,7 +282,8 @@
         </ul>
         <!-- /.navbar-top-links -->
 
-        {% include 'armory/sidebar.html' %}
+            {% include 'armory/sidebar.html' %}
+
         <!-- /.navbar-static-side -->
     </nav>
 
@@ -326,7 +327,9 @@
     {#<script src="{% static 'js/morris-data.js' %}"></script>#}
     {#<script src="http://ironsummitmedia.github.io/startbootstrap-sb-admin-2/dist/js/sb-admin-2.js"></script>#}
     <script src="{% static 'dist/js/sb-admin-2.js' %}"></script>
+    <script src="{% static 'armory/js/armory-ajax.js' %}"></script>
 
+    </div>
 </body>
 
 </html>
