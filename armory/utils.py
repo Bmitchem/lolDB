@@ -4,6 +4,7 @@ from riot_api import RiotInterface
 from armory import models
 import numpy as np
 from sets import Set
+from armory import constants
 
 
 def ward_win_graph():
@@ -31,17 +32,16 @@ def game_ward_win(ward_num, player_stats):
 
 
 def game_type_graph():
-    rift_maps = (1, 2, 11)
-    treeline_maps = (4, 10)
+
     games = models.Game.objects.all()
     games = games.values('gameMode', 'mapId')
     total_games = len(games)
     rift, treeline, aram, dominion = 0, 0, 0, 0
     for g in games:
         if g['gameMode'] == 'CLASSIC':
-            if g.get('mapId', 0) in rift_maps:
+            if g.get('mapId', 0) in constants.SUMMONERS_RIFT_MAP_CODES:
                 rift += 1
-            elif g.get('mapId', 0) in treeline_maps:
+            elif g.get('mapId', 0) in constants.TWISTED_TREELINE_MAP_CODES:
                 treeline += 1
         elif g['gameMode'] == 'ARAM':
             aram += 1
@@ -119,29 +119,40 @@ def champion_total_damage(relevant_player_stats):
     return np.mean(total_damage_per_game)
 
 def champion_map_winrate(champion_id):
-    relevant_games = models.Game.objects.filter(championId=champion_id).prefetch_related('stats')
-    aram_winrate = get_champion_map_winrate('ARAM', relevant_games)
-    classic_winrate = get_champion_map_winrate('CLASSIC', relevant_games)
-    domin_winrate = get_champion_map_winrate('CLASSIC', relevant_games)
+    relevant_stats = models.ParticipantStats.objects.filter(championId=champion_id).values('summonerId', 'winner')
+    relevant_games = models.Game.objects.filter(championId=champion_id).values('mapId', 'summonerId')
+    champ_global_winrate = models.Champions.objects.get(id=champion_id)
+    aram_winrate = get_champion_map_winrate(constants.ARAM_MAD_CODES, relevant_games, relevant_stats)
+    classic_winrate = get_champion_map_winrate(constants.SUMMONERS_RIFT_MAP_CODES, relevant_games, relevant_stats)
+    treeline_winrate = get_champion_map_winrate(constants.TWISTED_TREELINE_MAP_CODES, relevant_games, relevant_stats)
+    dominion_winrate = get_champion_map_winrate(constants.DOMINION_MAP_CODES, relevant_games, relevant_stats)
 
     from pygal.style import LightStyle
     pie_chart = pygal.Pie(style=LightStyle)
-    pie_chart.title = 'Damage Distribution (in %)'
+    pie_chart.title = 'Champion Winrate per Map (in %)'
     if aram_winrate:
-        pie_chart.add('Aram Winrate', aram_winrate / float(len(relevant_games)))
+        pie_chart.add('Aram Winrate', aram_winrate / float(champ_global_winrate.winrate))
     if classic_winrate:
-        pie_chart.add('Classic Winrate', classic_winrate / float(len(relevant_games)))
-    if domin_winrate:
-        pie_chart.add('Dominion Winrate', domin_winrate / float(len(relevant_games)))
+        pie_chart.add('Rift Winrate', classic_winrate / float(champ_global_winrate.winrate))
+    if treeline_winrate:
+        pie_chart.add('Treeline Winrate', treeline_winrate / float(champ_global_winrate.winrate))
+    if dominion_winrate:
+        pie_chart.add('Dominion Winrate', dominion_winrate / float(champ_global_winrate.winrate))
     return pie_chart.render()
 
-def get_champion_map_winrate(map, relevant_games):
+def get_champion_map_winrate(map_codes, relevant_games, relevant_stats):
     win_rate = []
+
+
     for game in relevant_games:
-        if game.gameMode == map:
-            pass
-                # win_rate.append(stat.winner)
-    return np.mean(win_rate) * 100
+        if game['mapId'] in map_codes:
+            for stat in relevant_stats:
+                if stat['summonerId'] == game['summonerId']:
+                    win_rate.append(stat['winner'])
+    if win_rate:
+        return np.mean(win_rate) * 100
+    else:
+        return False
 
 def champion_item_builds(championId):
     relevant_stats = models.ParticipantStats.objects.filter(championId=championId)

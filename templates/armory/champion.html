@@ -1,22 +1,64 @@
 {% extends 'base.html' %}
 
+
 {% block body_block %}
 
-    <div class="col-lg-8">
+
+    <div class="col-lg-4">
         <div class="panel panel-default">
-            <div class="panel-heading">
-                <i class="fa fa-bar-chart-o fa-fw"></i> {{ champ.name }}
-
-
-                {{ champion_damage|safe }}
+            <div class="panel-heading" style="cursor: pointer;" id="champion_damage_graph_header"><i
+                    class="fa fa-bar-chart-o fa-fw"></i>
+                Champion Damage Distribution Chart
             </div>
-            <div class="panel-heading">
-                <i class="fa fa-bar-chart-o fa-fw"></i> {{ champ.name }}
-
-
-                {{ game_mode_winrate|safe }}
-            </div>
-
+            {{ champion_damage|safe }}
         </div>
     </div>
+
+    <div class="modal fade bs-champion-damage-modal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                {{ champion_damage|safe }}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="col-lg-4">
+        <div class="panel panel-default">
+
+            <div class="panel-heading" style="cursor: pointer;" id="champion_map_winrate_header"><i class="fa fa-bar-chart-o fa-fw"></i>
+                Champion Winrate by map
+            </div>
+            {{ game_mode_winrate|safe }}
+        </div>
+    </div>
+
+    <div class="modal fade bs-champion-map-winrate" tabindex="-1" role="document" aria-labelledby="myLargeModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                {{ game_mode_winrate|safe }}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $('#champion_damage_graph_header').click(function(){
+            console.log("func 1");
+            $('.bs-champion-damage-modal').modal('show');
+        });
+        $('#champion_map_winrate_header').click(function(){
+            console.log("func 2");
+            $('.bs-champion-map-winrate').modal('show');
+        });
+    </script>
+
+
 {% endblock %}

@@ -155,12 +155,13 @@ class RiotInterface(object):
             champion = champion_list['data'].get(key)
             print("processing champion: ", champion.get('name'))
 
-            c = models.Champions.objects.get_or_create(id=champion.get('id'),
+            c, new = models.Champions.objects.get_or_create(id=champion.get('id'),
                                                        defaults={
                                                            'name': champion.get('name'),
-                                                       })[0]
+                                                       })
 
-
+            c.image = champion.get('image').get('full')
+            c.save()
             stats_info = champion['stats']
             stats = models.ChampionStats.objects.get_or_create(championId=champion.get('id'),
                                                                defaults={
@@ -234,7 +235,7 @@ class RiotInterface(object):
                                                             'plaintext': items.get('data')[key].get('plaintext', None)
                                                         })
 
-    def summoner_id_pull(self, summonerId):
+    def qsummoner_id_pull(self, summonerId):
         resp = requests.get('https://na.api.pvp.net/api/lol/na/v1.3/game/by-summoner/%d/recent?api_key=%s' %
                             (summonerId, settings.RIOT_API_KEY))
 

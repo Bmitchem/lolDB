@@ -10,10 +10,13 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>SB Admin 2 - Bootstrap Admin Theme</title>
+    <title>LoL Big Data</title>
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <link href="http://ironsummitmedia.github.io/startbootstrap-sb-admin-2/bower_components/bootstrap/dist/css/bootstrap.min.css"/>
     <!-- Bootstrap Core CSS -->
     <link href="{% static 'bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
+    <script src="{% static 'bootstrap/js/modal.js' %}"></script>
 
     <!-- MetisMenu CSS -->
     <link href="{% static 'metisMenu/dist/metisMenu.min.css' %}" rel="stylesheet">
@@ -50,7 +53,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="index.html">Leauge Big Data</a>
+            <a class="navbar-brand" href="/">Leauge Big Data</a>
         </div>
         <!-- /.navbar-header -->
 
@@ -279,14 +282,15 @@
         </ul>
         <!-- /.navbar-top-links -->
 
-        {% include 'armory/sidebar.html' %}
+            {% include 'armory/sidebar.html' %}
+
         <!-- /.navbar-static-side -->
     </nav>
 
     <div id="page-wrapper">
         <div class="row">
             <div class="col-lg-12">
-                <h1 class="page-header">{{ page_title }}</h1>
+                <h1 class="page-header">{{ page_title }}{% if page_title_image %}<img src="http://ddragon.leagueoflegends.com/cdn/5.2.1/img/champion/{{ page_title_image }}" style="height: 1.3em; float:right;"/>{% endif %}</h1>
             </div>
             <!-- /.col-lg-12 -->
         </div>
@@ -323,7 +327,9 @@
     {#<script src="{% static 'js/morris-data.js' %}"></script>#}
     {#<script src="http://ironsummitmedia.github.io/startbootstrap-sb-admin-2/dist/js/sb-admin-2.js"></script>#}
     <script src="{% static 'dist/js/sb-admin-2.js' %}"></script>
+    <script src="{% static 'armory/js/armory-ajax.js' %}"></script>
 
+    </div>
 </body>
 
 </html>

@@ -85,14 +85,17 @@ class ParticipantStats(models.Model):
     timePlayed = models.IntegerField(default=0, null=True)
     team = models.IntegerField(default=0, null=True)
 
+
 class ChampionSkins(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=256)
     num = models.IntegerField(default=0)
-    
+
+
 class ChampionTags(models.Model):
     tag = models.CharField(max_length=56)
-    
+
+
 class ChampionStats(models.Model):
     championId = models.IntegerField(primary_key=True)
     armor = models.IntegerField(default=0)
@@ -116,6 +119,7 @@ class ChampionStats(models.Model):
     spellblock = models.IntegerField(default=0)
     spellblockperlevel = models.IntegerField(default=0)
 
+
 class Champions(models.Model):
     id = models.IntegerField(primary_key=True)
     active = models.NullBooleanField(default=True, null=True)
@@ -127,6 +131,7 @@ class Champions(models.Model):
     tag = models.ManyToManyField(ChampionTags)
     stats = models.ManyToManyField(ChampionStats)
     winrate = models.DecimalField(default=0, decimal_places=2, max_digits=4)
+    image = models.CharField(max_length=50, null=True)
 
 class Items(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -135,11 +140,13 @@ class Items(models.Model):
     description = models.CharField(max_length=1024)
     plaintext = models.CharField(max_length=1024, null=True)
 
+
 class Summoners(models.Model):
     summonerId = models.IntegerField(default=0, primary_key=True)
     teamId = models.IntegerField(default=0, null=True)
     champion = models.ManyToManyField(Champions)
     dateAdded = models.DateTimeField(null=True)
+
 
 class Game(models.Model):
     summonerId=models.IntegerField(default=0)
