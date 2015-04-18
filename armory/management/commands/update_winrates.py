@@ -1,6 +1,6 @@
 __author__ = 'bob'
 import numpy
-from armory.models import ParticipantStats, Champions, Game
+from armory.models import ParticipantStats, Champions, Game, Participant
 from django.core.management.base import BaseCommand
 from armory import utils, constants
 
@@ -23,10 +23,11 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         champs = Champions.objects.all()
         player_stats = ParticipantStats.objects.all()
+        players = Participant.objects.all()
         games = Game.objects.all()
         for ch in champs:
             ch.winrate = winrate(ch.id, player_stats)
-            ch.popularity = utils.champion_popularity(ch.id, player_stats)
+            ch.popularity = utils.champion_popularity(ch.id, players)
             ch.aram_winrate = utils.get_champion_map_winrate(constants.ARAM_MAD_CODES,
                                                              games.filter(championId=ch.id).values('mapId', 'summonerId'),
                                                              player_stats.filter(championId=ch.id).values('winner', 'summonerId'))

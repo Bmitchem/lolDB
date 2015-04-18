@@ -187,7 +187,7 @@ def champion_item_builds(championId):
 def champion_popularity(championId, stats):
     games_picked = 0
     for stat in stats:
-        if stat.championId == championId:
+        if stat.champion == championId:
             games_picked += 1
     if games_picked:
         return (games_picked/ float(len(stats))) * 100
