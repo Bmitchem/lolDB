@@ -118,39 +118,39 @@ def champion_total_damage(relevant_player_stats):
         
     return np.mean(total_damage_per_game)
 
-def champion_map_winrate(champion_id):
+def champion_map_pickrate(champion_id):
     relevant_stats = models.ParticipantStats.objects.filter(championId=champion_id).values('summonerId', 'winner')
     relevant_games = models.Game.objects.filter(championId=champion_id).values('mapId', 'summonerId')
-    champ_global_winrate = models.Champions.objects.get(id=champion_id)
-    aram_winrate = get_champion_map_winrate(constants.ARAM_MAD_CODES, relevant_games, relevant_stats)
-    classic_winrate = get_champion_map_winrate(constants.SUMMONERS_RIFT_MAP_CODES, relevant_games, relevant_stats)
-    treeline_winrate = get_champion_map_winrate(constants.TWISTED_TREELINE_MAP_CODES, relevant_games, relevant_stats)
-    dominion_winrate = get_champion_map_winrate(constants.DOMINION_MAP_CODES, relevant_games, relevant_stats)
+    aram_winrate = get_champion_map_pickrate(constants.ARAM_MAD_CODES, relevant_games, relevant_stats)
+    classic_winrate = get_champion_map_pickrate(constants.SUMMONERS_RIFT_MAP_CODES, relevant_games, relevant_stats)
+    treeline_winrate = get_champion_map_pickrate(constants.TWISTED_TREELINE_MAP_CODES, relevant_games, relevant_stats)
+    dominion_winrate = get_champion_map_pickrate(constants.DOMINION_MAP_CODES, relevant_games, relevant_stats)
+
 
     from pygal.style import LightStyle
     pie_chart = pygal.Pie(style=LightStyle)
-    pie_chart.title = 'Champion Winrate per Map (in %)'
-    if aram_winrate:
-        pie_chart.add('Aram Winrate', aram_winrate / float(champ_global_winrate.winrate))
+    pie_chart.title = 'Champion popularity per Map (in %)'
     if classic_winrate:
-        pie_chart.add('Rift Winrate', classic_winrate / float(champ_global_winrate.winrate))
+        pie_chart.add('Rift Popularity', classic_winrate / float(len(relevant_games)))
     if treeline_winrate:
-        pie_chart.add('Treeline Winrate', treeline_winrate / float(champ_global_winrate.winrate))
+        pie_chart.add('Treeline Popularity', treeline_winrate / float(len(relevant_games)))
+    if aram_winrate:
+        pie_chart.add('Aram Popularity', aram_winrate / float(len(relevant_games)))
     if dominion_winrate:
-        pie_chart.add('Dominion Winrate', dominion_winrate / float(champ_global_winrate.winrate))
+        pie_chart.add('Dominion Popularity', dominion_winrate / float(len(relevant_games)))
     return pie_chart.render()
 
-def get_champion_map_winrate(map_codes, relevant_games, relevant_stats):
-    win_rate = []
+def get_champion_map_pickrate(map_codes, relevant_games, relevant_stats):
+    pick_rate = 0
 
 
     for game in relevant_games:
         if game['mapId'] in map_codes:
             for stat in relevant_stats:
                 if stat['summonerId'] == game['summonerId']:
-                    win_rate.append(stat['winner'])
-    if win_rate:
-        return np.mean(win_rate) * 100
+                    pick_rate += 1
+    if pick_rate:
+        return pick_rate
     else:
         return False
 
@@ -183,6 +183,32 @@ def champion_item_builds(championId):
 
 
     return builds
+
+def champion_popularity(championId, stats):
+    games_picked = 0
+    for stat in stats:
+        if stat.championId == championId:
+            games_picked += 1
+    if games_picked:
+        return (games_picked/ float(len(stats))) * 100
+    else:
+        return 0.00
+
+
+def get_champion_map_winrate(map_codes, relevant_games, relevant_stats):
+    winrate = []
+
+
+    for game in relevant_games:
+        if game['mapId'] in map_codes:
+            for stat in relevant_stats:
+                if stat['summonerId'] == game['summonerId']:
+                    winrate.append(stat['winner'])
+    if winrate:
+        return np.mean(winrate) * 100
+    else:
+        return False
+
 
 
 

@@ -1,16 +1,84 @@
 {% extends 'base.html' %}
-
+{% load staticfiles %}
+<script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
 {% block body_block %}
 
     <div class="col-lg-8">
         <div class="panel panel-default">
-            <div class="panel-heading">
-                <i class="fa fa-bar-chart-o fa-fw"></i> {{ body_title }}
-
-
-
+    <div class="panel-heading">
+        <i class="fa fa-bar-chart-o fa-fw"></i> This Weeks Free Champions
+        <div class="pull-right">
+            <div class="btn-group">
+                <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                    Actions
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu pull-right" role="menu">
+                    <li><a href="#">Action</a>
+                    </li>
+                    <li><a href="#">Another action</a>
+                    </li>
+                    <li><a href="#">Something else here</a>
+                    </li>
+                    <li class="divider"></li>
+                    <li><a href="#">Separated link</a>
+                    </li>
+                </ul>
             </div>
-            {{ graph|safe }}
         </div>
+    </div>
+    <!-- /.panel-heading -->
+
+    <div class="panel-body">
+        {% if champions %}
+        <div class="row">
+            <div style="width:100%;">
+                <div class="table-responsive" style="height:auto; max-height: 858px; overflow-x:hidden; direction: rtl;">
+                    <div id="toolbar">
+                    </div>
+                    <table class="table table-bordered table-hover table-striped"
+                           data-toolbar="#toolbar"
+                           style="direction: ltr;"
+                           data-show-toggle="true"
+                           data-show-columns="true"
+                           data-search="true"
+                           data-select-item-name="toolbar1">
+                        <thead>
+                        <tr>
+                            <th data-sortable="true" data-field="name">Name</th>
+                            <th>Role</th>
+                            <th data-sortable="true" data-field="popularity">Popularity</th>
+                            <th data-sortable="true" data-field="global_winrate">Win Rate Global</th>
+                            <th data-sortable="true" data-field="rift_winrate">Win Rate Summoner's Rift</th>
+                            <th data-sortable="true" data-field="aram_winrate">Win Rate ARAM</th>
+                            <th data-sortable="true" data-field="odin_winrate">Win Rate Dominion</th>
+                            <th data-sortable="true" data-field="tree_winrate">Win Rate Twisted Treeline</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for champion in champ_list %}
+                        <tr>
+                            <td>{{ champion.name }}</td> <! -- name -->
+                            <td>{% for tag in champion.tag.all %}{{ tag.tag }} {% endfor %}</td> <!-- role -->
+                            <td>{{ champion.popularity }}%</td> <!--popularity-->
+                            <td>{{ champion.winrate }}%</td><!--  global winrate -->
+                            <td>{{ champion.rift_winrate }}%</td><!-- rift winrate -->
+                            <td>{{ champion.aram_winrate }}%</td><!-- aram winrate -->
+                            <td>{{ champion.dominion_winrate }}%</td><!-- dominion winrate -->
+                            <td>{{ champion.treeline_winrate }}%</td><!-- treeline winrate -->
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.table-responsive -->
+            </div>
+        </div>
+        <!-- /.row -->
+        {% endif %}
+    </div>
+    <!-- /.panel-body -->
+</div>
     </div>
 {% endblock %}

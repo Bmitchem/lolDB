@@ -13,7 +13,9 @@ def index(request):
     #list of current games
 
     champs = models.Champions.objects.filter(freeToPlay=1).order_by('-winrate')
-    champ_list = models.Champions.objects.all()
+    champ_list = models.Champions.objects.all().order_by('name')
+    stats = models.ParticipantStats.objects.all()
+    games = models.Game
     graph = utils.game_type_graph()
 
 

@@ -132,6 +132,11 @@ class Champions(models.Model):
     stats = models.ManyToManyField(ChampionStats)
     winrate = models.DecimalField(default=0, decimal_places=2, max_digits=4)
     image = models.CharField(max_length=50, null=True)
+    aram_winrate = models.DecimalField(default=0, decimal_places=2, max_digits=6)
+    rift_winrate = models.DecimalField(default=0, decimal_places=2, max_digits=6)
+    treeline_winrate = models.DecimalField(default=0, decimal_places=2, max_digits=6)
+    dominion_winrate = models.DecimalField(default=0, decimal_places=2, max_digits=6)
+    popularity = models.DecimalField(default=0, decimal_places=2, max_digits=6)
 
 class Items(models.Model):
     id = models.IntegerField(primary_key=True)

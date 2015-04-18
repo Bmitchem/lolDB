@@ -26,7 +26,7 @@ def champion(request):
     champs = models.Champions.objects.filter(freeToPlay=1).order_by('-winrate')
     champ_list = models.Champions.objects.all().values()
     damage_graph = utils.champion_damage_distribution(champ_id)
-    game_mode_winrate = utils.champion_map_winrate(champ_id)
+    game_mode_winrate = utils.champion_map_pickrate(champ_id)
     for champ in champ_list:
         if champ['id'] == int(champ_id):
             picked_champion = champ
