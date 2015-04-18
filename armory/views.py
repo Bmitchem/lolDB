@@ -57,7 +57,8 @@ def champion_search(request):
 
                         {% for champ in  champ_list %}
                         <li>
-                            <a href="/armory/champion/{{ champ.id }}">{{ champ.name }}</a>
+                            <a href="/armory/champion/{{ champ.id }}">{{ champ.name }}
+                            <img src="http://ddragon.leagueoflegends.com/cdn/5.7.1/img/champion/{{ champ.image }}" style="height: 2em;"/></a>
                         </li>
                         {% endfor %}
                         </div>
