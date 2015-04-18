@@ -8,18 +8,28 @@ import pygal
 from armory import utils
 from django.views.decorators.cache import cache_page
 
-# @cache_page(60*15)
+@cache_page(60*15)
 def index(request):
     #list of current games
-
+    main_page_stats = []
     champs = models.Champions.objects.filter(freeToPlay=1).order_by('-winrate')
     champ_list = models.Champions.objects.all().order_by('name')
-    stats = models.ParticipantStats.objects.all()
-    games = models.Game
+    players = models.ParticipantStats.objects.all()
+    main_page_stats.append({
+        'name': 'Games recorded',
+        'info': len(players)
+    })
+    summoners = models.Summoners.objects.all()
+    main_page_stats.append({
+        'name': 'Summoners Stored',
+        'info': len(summoners)
+    })
     graph = utils.game_type_graph()
 
 
+
     return render_to_response('index.html', {
+        'main_page_stats': main_page_stats,
         'champions' : champs,
         'graph': graph,
         'champ_list': champ_list,
