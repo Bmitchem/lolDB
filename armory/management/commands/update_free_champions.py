@@ -8,4 +8,4 @@ import time
 class Command(BaseCommand):
     def handle(self, *args, **options):
         ri = RiotInterface()
-        ri.update_free_champions
+        ri.update_free_champions()

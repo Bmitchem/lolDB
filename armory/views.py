@@ -28,10 +28,6 @@ def champion(request, champion_Id):
             picked_champion = champ
             break
 
-
-
-
-
     return render_to_response('armory/champion.html', {
         'champ': picked_champion['name'],
         'champion_damage': damage_graph,
