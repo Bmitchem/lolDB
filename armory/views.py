@@ -17,18 +17,22 @@ from django.http import HttpResponse
 
 
 # @cache_page(60 * 15)
-def champion(request, champion_Id):
+def champion(request):
+    champ_id = 1
+    if request.method == 'GET':
+        champ_id = request.GET['champ_id']
+
     picked_champion = None
     champs = models.Champions.objects.filter(freeToPlay=1).order_by('-winrate')
     champ_list = models.Champions.objects.all().values()
-    damage_graph = utils.champion_damage_distribution(champion_Id)
-    game_mode_winrate = utils.champion_map_winrate(champion_Id)
+    damage_graph = utils.champion_damage_distribution(champ_id)
+    game_mode_winrate = utils.champion_map_winrate(champ_id)
     for champ in champ_list:
-        if champ['id'] == int(champion_Id):
+        if champ['id'] == int(champ_id):
             picked_champion = champ
             break
 
-    return render_to_response('armory/champion.html', {
+    return HttpResponse(render_to_response('armory/champion.html', {
         'champ': picked_champion['name'],
         'champion_damage': damage_graph,
         'game_mode_winrate': game_mode_winrate,
@@ -38,7 +42,7 @@ def champion(request, champion_Id):
         'body_title': '%s\'s Vital Stats' % picked_champion['name'],
         'page_title_image': picked_champion['image']
 
-    })
+    }))
 
 def champion_search(request):
     context = RequestContext(request)

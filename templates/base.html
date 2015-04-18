@@ -295,9 +295,10 @@
             <!-- /.col-lg-12 -->
         </div>
     <div class="row">
-        {% block body_block %}
-
-        {% endblock %}
+        <div id="body_div">
+            {% block body_block %}
+            {% endblock %}
+        </div>
         <!-- /.col-lg-8 -->
         {% include 'armory/right_column.html' %}
         <!-- /.col-lg-4 -->

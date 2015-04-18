@@ -6,17 +6,21 @@ $(document).ready(function(){
         var query;
         query = $( this ).val();
         $.get('/armory/champion_search/', {suggestion: query}, function(data){
-            console.log("pinged! " + query);
             if(query){
                 var $target = $('#side_bar_search_div');
                 $target.html(data);
                 $('#search_row').show();
             }else{
-                console.log('got inside');
                 $('#search_row').hide();
-                console.log('got past');
             }
         });
 
+    });
+    $('.champion_page_link').click(function(){
+        var champ_id = $( this).data('champion-id');
+        var $target = $('#page-wrapper');
+        $.get('/armory/champion/', {champ_id: champ_id}, function(data){
+            $target.html(data);
+        });
     });
 });

@@ -29,8 +29,8 @@
                             <ul class="nav nav-second-level" style="height:auto; max-height: 600px; overflow-x:hidden; direction: rtl;" id="champion_ul_selector">
 
                                 {% for champ in  champ_list %}
-                                <li>
-                                    <a href="/armory/champion/{{ champ.id }}">{{ champ.name }}
+                                <li class="champion_page_link" data-champion-id="{{ champ.id }}">
+                                    <a href="#">{{ champ.name }}
                                         <img src="http://ddragon.leagueoflegends.com/cdn/5.7.1/img/champion/{{ champ.image }}" style="height: 2em;"/></a>
                                 </li>
                                 {% endfor %}
