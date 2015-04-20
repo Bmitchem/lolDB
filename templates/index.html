@@ -47,13 +47,10 @@
                         <thead>
                         <tr>
                             <th data-sortable="true" data-field="name">Name</th>
-                            <th>Role</th>
                             <th data-sortable="true" data-field="popularity">Popularity</th>
                             <th data-sortable="true" data-field="global_winrate">Win Rate Global</th>
                             <th data-sortable="true" data-field="rift_winrate">Win Rate Summoner's Rift</th>
                             <th data-sortable="true" data-field="aram_winrate">Win Rate ARAM</th>
-                            <th data-sortable="true" data-field="odin_winrate">Win Rate Dominion</th>
-                            <th data-sortable="true" data-field="tree_winrate">Win Rate Twisted Treeline</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -65,8 +62,6 @@
                             <td>{{ champion.winrate }}%</td><!--  global winrate -->
                             <td>{{ champion.rift_winrate }}%</td><!-- rift winrate -->
                             <td>{{ champion.aram_winrate }}%</td><!-- aram winrate -->
-                            <td>{{ champion.dominion_winrate }}%</td><!-- dominion winrate -->
-                            <td>{{ champion.treeline_winrate }}%</td><!-- treeline winrate -->
                         </tr>
                         {% endfor %}
                         </tbody>
