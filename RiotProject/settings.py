@@ -13,13 +13,6 @@ import os
 from keys import RIOT_API_KEY, DATABASES
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'k$m-mqw(0iz#3fio$r!f98tu$joqg4#$*^nr+$!sbl*#m*7vov'
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
