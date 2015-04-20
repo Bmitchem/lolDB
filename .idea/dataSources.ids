@@ -1539,6 +1539,11 @@
       <column name="name" sqlType="VARCHAR" precision="256" scale="0" nullable="false" jdbcType="12"/>
       <column name="winrate" sqlType="DECIMAL" precision="4" scale="2" nullable="false" jdbcType="3"/>
       <column name="image" sqlType="VARCHAR" precision="50" scale="0" nullable="true" jdbcType="12"/>
+      <column name="aram_winrate" sqlType="DECIMAL" precision="6" scale="2" nullable="true" jdbcType="3"/>
+      <column name="dominion_winrate" sqlType="DECIMAL" precision="6" scale="2" nullable="true" jdbcType="3"/>
+      <column name="popularity" sqlType="DECIMAL" precision="6" scale="2" nullable="true" jdbcType="3"/>
+      <column name="rift_winrate" sqlType="DECIMAL" precision="6" scale="2" nullable="true" jdbcType="3"/>
+      <column name="treeline_winrate" sqlType="DECIMAL" precision="6" scale="2" nullable="true" jdbcType="3"/>
       <primary-key name="PRIMARY" columns="id"/>
       <exported-key name="armory_cham_champions_id_2a558f90a1636d8b_fk_armory_champions_id" table="armory_champions_skins" schema="" catalog="riotDatabase" columns="champions_id"/>
       <exported-key name="armory_cham_champions_id_2883d393367cf486_fk_armory_champions_id" table="armory_champions_stats" schema="" catalog="riotDatabase" columns="champions_id"/>

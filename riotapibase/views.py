@@ -14,15 +14,15 @@ def index(request):
     main_page_stats = []
     champs = models.Champions.objects.filter(freeToPlay=1).order_by('-winrate')
     champ_list = models.Champions.objects.all().order_by('name')
-    players = models.ParticipantStats.objects.all()
+    players = models.ParticipantStats.objects.count()
     main_page_stats.append({
         'name': 'Games recorded',
-        'info': len(players)
+        'info': players
     })
-    summoners = models.Summoners.objects.all()
+    summoners = models.Summoners.objects.count()
     main_page_stats.append({
         'name': 'Summoners Stored',
-        'info': len(summoners)
+        'info': summoners
     })
     graph = utils.game_type_graph()
 

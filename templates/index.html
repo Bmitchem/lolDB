@@ -60,7 +60,7 @@
                         {% for champion in champ_list %}
                         <tr>
                             <td>{{ champion.name }}</td> <! -- name -->
-                            <td>{% for tag in champion.tag.all %}{{ tag.tag }} {% endfor %}</td> <!-- role -->
+{#                            <td>{% for tag in champion.tag.all %}{{ tag.tag }} {% endfor %}</td> <!-- role -->#}
                             <td>{{ champion.popularity }}%</td> <!--popularity-->
                             <td>{{ champion.winrate }}%</td><!--  global winrate -->
                             <td>{{ champion.rift_winrate }}%</td><!-- rift winrate -->
