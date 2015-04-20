@@ -8,8 +8,8 @@ def winrate(id, player_stats):
     games = []
     for ps in player_stats:
         try:
-            if ps.championId == id:
-                games.append(ps.winner)
+            if ps['championId'] == id:
+                games.append(ps['winner'])
         except IndexError as e:
             print "print errored out", ps.id
             continue
@@ -22,7 +22,7 @@ def winrate(id, player_stats):
 class Command(BaseCommand):
     def handle(self, *args, **options):
         champs = Champions.objects.all()
-        player_stats = ParticipantStats.objects.all()
+        player_stats = ParticipantStats.objects.all().values('championId', 'winner')
         players = Participant.objects.all()
         games = Game.objects.all()
         for ch in champs:
