@@ -7,6 +7,9 @@ from armory import models
 import pygal
 from armory import utils
 from django.views.decorators.cache import cache_page
+import json
+import cPickle
+from os import path
 
 @cache_page(60*15)
 def index(request):
@@ -24,7 +27,12 @@ def index(request):
         'name': 'Summoners Stored',
         'info': summoners
     })
-    graph = utils.game_type_graph()
+
+    if path.isfile('front_page_graph.json'):
+        graph = cPickle.load(open('front_page_graph.json', 'r'))
+    else:
+        graph = utils.game_type_graph()
+        cPickle.dump(graph, open('front_page_graph.json', 'w+'))
 
 
 

@@ -19,6 +19,8 @@ def winrate(id, player_stats):
     else:
         return 0.0
 
+
+
 class Command(BaseCommand):
     def handle(self, *args, **options):
         champs = Champions.objects.all()
