@@ -85,11 +85,19 @@ def player_search(request):
     else:
         return
     player_match_history = ri.match_history(player_id_resp).json()
+    champs = []
     for match in player_match_history['matches']:
         match['matchCreation'] = datetime.datetime.fromtimestamp(match['matchCreation'] / 1000.0)
+        champs.append(match['participants'][0]['championId'])
+
+    champ_list = models.Champions.objects.filter(id__in=champs)
+
+
+
 
     return HttpResponse(render_to_response('armory/player_match_history.html',
-                                           {'match_json': player_match_history, 'player_name': player_name}))
+                                           {'match_json': player_match_history, 'player_name': player_name,
+                                            'champ_list': champ_list}))
 
 
 

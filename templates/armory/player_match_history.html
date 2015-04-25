@@ -9,6 +9,7 @@
     <table class="table table-bordered table-hover table-responsive">
         <thead>
         <tr>
+            <th data-field="playerChampion" data-align="left">Champion</th>
             <th data-field="matchMode" data-radio="true">Match Mode</th>
             <th data-field='matchDuration' data-align="right">Match Duration</th>
             <th data-field='queueType' data-align="center">Queue Type</th>
@@ -18,6 +19,16 @@
         {% for match in  match_json.matches reversed %}
 
             <tr>
+                <td>
+                    {% for stat in match.participants %}
+                        {% for champ in champ_list %}
+                            {% ifequal champ.id stat.championId %}
+                                <img src="http://ddragon.leagueoflegends.com/cdn/5.7.1/img/champion/{{ champ.image }}"
+                                     style="height: 2em;"/> {{ champ.name }}
+                            {% endifequal %}
+                        {% endfor %}
+                    {% endfor %}
+                </td>
                 <td>
                     {{ match.matchMode }}
                 </td>
