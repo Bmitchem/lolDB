@@ -6,7 +6,7 @@
 
 </div>
 <div class="col-lg-8">
-    <table class="table table-bordered table-hover table-responsive">
+    <table class="table table-bordered table-responsive">
         <thead>
         <tr>
             <th data-field="playerChampion" data-align="left">Champion</th>
@@ -17,7 +17,7 @@
         </thead>
         {% for match in  match_json.matches reversed %}
 
-            <tr class={% for stat in match.participants %}
+            <tr id="game_row" class={% for stat in match.participants %}
                 {% ifequal stat.stats.winner True %}
                     "btn-success"
                 {% else %}
