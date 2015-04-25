@@ -1,0 +1,37 @@
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">{{ player_name }}'s Match History</h1>
+    </div>
+    <!-- /.col-lg-12 -->
+
+</div>
+<div class="col-lg-8">
+    <table class="table table-bordered table-hover table-responsive">
+        <thead>
+        <tr>
+            <th data-field="matchMode" data-radio="true">Match Mode</th>
+            <th data-field='matchDuration' data-align="right">Match Duration</th>
+            <th data-field='queueType' data-align="center">Queue Type</th>
+            <th data-field="matchCreation" data-align="left">Mate Date</th>
+        </tr>
+        </thead>
+        {% for match in  match_json.matches reversed %}
+
+            <tr>
+                <td>
+                    {{ match.matchMode }}
+                </td>
+                <td>
+                    {% widthratio match.matchDuration 60 1 %} minutes
+                </td>
+                <td>
+                    {{ match.queueType }}
+                </td>
+                <td>
+                    {{ match.matchCreation }}
+                </td>
+            </tr>
+
+        {% endfor %}
+    </table>
+</div>

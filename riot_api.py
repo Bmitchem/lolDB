@@ -10,6 +10,16 @@ class RiotInterface(object):
     def __init__(self):
         pass
 
+    def pull_summoner_id(self, name):
+        resp = requests.get('https://na.api.pvp.net/api/lol/na/v1.4/summoner/by-name/%s?api_key=%s' %
+                            (name, settings.RIOT_API_KEY))
+
+        if resp.status_code == 200:
+            return resp.json()
+        else:
+            return None
+
+
     def upload_match_history(self, MATCH_DATA):
         for match in MATCH_DATA.get('matches'):
             match_db, unused = models.MatchSummary.objects.get_or_create(matchId=match.get('matchId'),

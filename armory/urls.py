@@ -10,5 +10,6 @@ urlpatterns = patterns('',
     url(r'^champion/$', views.champion, name='champ_id'),
 
     url(r'^champion_search/$', views.champion_search, name='suggestion'),
+    url(r'^player_search/$', views.player_search, name='suggestion'),
 
 )

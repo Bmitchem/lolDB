@@ -14,7 +14,7 @@ from django.views.decorators.cache import cache_page
 from django.template import Context, Template
 from django.template.defaultfilters import slugify
 from django.http import HttpResponse
-
+import datetime
 
 # @cache_page(60 * 15)
 def champion(request):
@@ -45,7 +45,6 @@ def champion(request):
     }))
 
 def champion_search(request):
-    context = RequestContext(request)
     champ_list = []
     starts_with = ''
     if request.method == 'GET':
@@ -66,6 +65,32 @@ def champion_search(request):
     context = Context({'champ_list': champ_list, 'search_completed': bool(champ_list), })
 
     return HttpResponse(template.render(context))
+
+
+def player_search(request):
+    context = RequestContext(request)
+    champ_list = []
+    if request.method == 'GET':
+        player_name = request.GET['suggestion']
+    else:
+        return
+
+    ri = RiotInterface()
+
+    player_id_resp = ri.pull_summoner_id(player_name)
+    if player_id_resp:
+        player_id_resp = player_id_resp.get(player_name.lower(), None)
+        if player_id_resp:
+            player_id_resp = player_id_resp.get('id', None)
+    else:
+        return
+    player_match_history = ri.match_history(player_id_resp).json()
+    for match in player_match_history['matches']:
+        match['matchCreation'] = datetime.datetime.fromtimestamp(match['matchCreation'] / 1000.0)
+
+    return HttpResponse(render_to_response('armory/player_match_history.html',
+                                           {'match_json': player_match_history, 'player_name': player_name}))
+
 
 
 
