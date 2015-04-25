@@ -12,13 +12,18 @@
             <th data-field="playerChampion" data-align="left">Champion</th>
             <th data-field="matchMode" data-radio="true">Match Mode</th>
             <th data-field='matchDuration' data-align="right">Match Duration</th>
-            <th data-field='queueType' data-align="center">Queue Type</th>
             <th data-field="matchCreation" data-align="left">Mate Date</th>
         </tr>
         </thead>
         {% for match in  match_json.matches reversed %}
 
-            <tr>
+            <tr class={% for stat in match.participants %}
+                {% ifequal stat.stats.winner True %}
+                    "btn-success"
+                {% else %}
+                    "btn-danger"
+                {% endifequal %}
+                >{% endfor %}
                 <td>
                     {% for stat in match.participants %}
                         {% for champ in champ_list %}
@@ -34,9 +39,6 @@
                 </td>
                 <td>
                     {% widthratio match.matchDuration 60 1 %} minutes
-                </td>
-                <td>
-                    {{ match.queueType }}
                 </td>
                 <td>
                     {{ match.matchCreation }}
