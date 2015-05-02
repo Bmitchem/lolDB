@@ -70,16 +70,17 @@ class Morris.Bar extends Morris.Grid
       label.transform("t0,#{labelBox.height / 2}...")
       if @options.xLabelAngle != 0
         offset = -0.5 * textBox.width *
-          Math.cos(@options.xLabelAngle * Math.PI / 180.0)
+            Math.cos(@options.xLabelAngle * Math.PI / 180.0)
         label.transform("t#{offset},0...")
       # try to avoid overlaps
       if (not prevLabelMargin? or
-          prevLabelMargin >= labelBox.x + labelBox.width or
-          prevAngleMargin? and prevAngleMargin >= labelBox.x) and
-         labelBox.x >= 0 and (labelBox.x + labelBox.width) < @el.width()
+        prevLabelMargin >= labelBox.x + labelBox.width or
+        prevAngleMargin? and prevAngleMargin >= labelBox.x) and
+        labelBox.x >= 0 and (labelBox.x + labelBox.width) < @el.width()
         if @options.xLabelAngle != 0
           margin = 1.25 * @options.gridTextSize /
-            Math.sin(@options.xLabelAngle * Math.PI / 180.0)
+            Math.sin(@options.xLabelAngle * Math.PI / 180.0
+          )
           prevAngleMargin = labelBox.x - margin
         prevLabelMargin = labelBox.x - @options.xLabelMargin
       else
@@ -112,11 +113,12 @@ class Morris.Bar extends Morris.Grid
           size = bottom - top
 
           if @options.verticalGridCondition and @options.verticalGridCondition(row.x)
-            @drawBar(@left + idx * groupWidth, @top, groupWidth, Math.abs(@top - @bottom), @options.verticalGridColor, @options.verticalGridOpacity, @options.barRadius)
+            @drawBar(@left + idx * groupWidth, @top, groupWidth, Math.abs(@top - @bottom), @options.verticalGridColor,
+              @options.verticalGridOpacity, @options.barRadius)
 
           top -= lastTop if @options.stacked
           @drawBar(left, top, barWidth, size, @colorFor(row, sidx, 'bar'),
-              @options.barOpacity, @options.barRadius)
+            @options.barOpacity, @options.barRadius)
 
           lastTop += size
         else
@@ -129,8 +131,8 @@ class Morris.Bar extends Morris.Grid
   # @param type [String] "bar", "hover" or "label"
   colorFor: (row, sidx, type) ->
     if typeof @options.barColors is 'function'
-      r = { x: row.x, y: row.y[sidx], label: row.label }
-      s = { index: sidx, key: @options.ykeys[sidx], label: @options.labels[sidx] }
+      r = {x: row.x, y: row.y[sidx], label: row.label}
+      s = {index: sidx, key: @options.ykeys[sidx], label: @options.labels[sidx]}
       @options.barColors.call(@, r, s, type)
     else
       @options.barColors[sidx % @options.barColors.length]
@@ -184,10 +186,10 @@ class Morris.Bar extends Morris.Grid
 
   drawXAxisLabel: (xPos, yPos, text) ->
     label = @raphael.text(xPos, yPos, text)
-      .attr('font-size', @options.gridTextSize)
-      .attr('font-family', @options.gridTextFamily)
-      .attr('font-weight', @options.gridTextWeight)
-      .attr('fill', @options.gridTextColor)
+    .attr('font-size', @options.gridTextSize)
+    .attr('font-family', @options.gridTextFamily)
+    .attr('font-weight', @options.gridTextWeight)
+    .attr('fill', @options.gridTextColor)
 
   drawBar: (xPos, yPos, width, height, barColor, opacity, radiusArray) ->
     maxRadius = Math.max(radiusArray...)
@@ -196,13 +198,13 @@ class Morris.Bar extends Morris.Grid
     else
       path = @raphael.path @roundedRect(xPos, yPos, width, height, radiusArray)
     path
-      .attr('fill', barColor)
-      .attr('fill-opacity', opacity)
-      .attr('stroke', 'none')
+    .attr('fill', barColor)
+    .attr('fill-opacity', opacity)
+    .attr('stroke', 'none')
 
-  roundedRect: (x, y, w, h, r = [0,0,0,0]) ->
-    [ "M", x, r[0] + y, "Q", x, y, x + r[0], y,
-      "L", x + w - r[1], y, "Q", x + w, y, x + w, y + r[1],
-      "L", x + w, y + h - r[2], "Q", x + w, y + h, x + w - r[2], y + h,
-      "L", x + r[3], y + h, "Q", x, y + h, x, y + h - r[3], "Z" ]
+  roundedRect: (x, y, w, h, r = [0, 0, 0, 0]) ->
+    ["M", x, r[0] + y, "Q", x, y, x + r[0], y,
+     "L", x + w - r[1], y, "Q", x + w, y, x + w, y + r[1],
+     "L", x + w, y + h - r[2], "Q", x + w, y + h, x + w - r[2], y + h,
+     "L", x + r[3], y + h, "Q", x, y + h, x, y + h - r[3], "Z"]
 

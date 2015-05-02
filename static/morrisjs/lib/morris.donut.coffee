@@ -22,7 +22,7 @@ class Morris.Donut extends Morris.EventEmitter
       '#052C48'
       '#042135'
     ],
-    backgroundColor: '#FFFFFF', 
+    backgroundColor: '#FFFFFF',
     labelColor: '#000000',
     formatter: Morris.commas
     resize: false
@@ -75,7 +75,7 @@ class Morris.Donut extends Morris.EventEmitter
     for value, i in @values
       next = last + min + C * (value / total)
       seg = new Morris.DonutSegment(
-        cx, cy, w*2, w, last, next,
+        cx, cy, w * 2, w, last, next,
         @data[i].color || @options.colors[idx % @options.colors.length],
         @options.backgroundColor, idx, @raphael)
       seg.render()
@@ -132,8 +132,8 @@ class Morris.Donut extends Morris.EventEmitter
 
   drawEmptyDonutLabel: (xPos, yPos, color, fontSize, fontWeight) ->
     text = @raphael.text(xPos, yPos, '')
-      .attr('font-size', fontSize)
-      .attr('fill', color)
+    .attr('font-size', fontSize)
+    .attr('fill', color)
     text.attr('font-weight', fontWeight) if fontWeight?
     return text
 
@@ -169,36 +169,36 @@ class Morris.DonutSegment extends Morris.EventEmitter
     [ox0, oy0, ox1, oy1] = @calcArcPoints(r2)
     return (
       "M#{ix0},#{iy0}" +
-      "A#{r1},#{r1},0,#{@is_long},0,#{ix1},#{iy1}" +
-      "L#{ox1},#{oy1}" +
-      "A#{r2},#{r2},0,#{@is_long},1,#{ox0},#{oy0}" +
-      "Z")
+        "A#{r1},#{r1},0,#{@is_long},0,#{ix1},#{iy1}" +
+        "L#{ox1},#{oy1}" +
+        "A#{r2},#{r2},0,#{@is_long},1,#{ox0},#{oy0}" +
+        "Z")
 
   calcArc: (r) ->
     [ix0, iy0, ix1, iy1] = @calcArcPoints(r)
     return (
       "M#{ix0},#{iy0}" +
-      "A#{r},#{r},0,#{@is_long},0,#{ix1},#{iy1}")
+        "A#{r},#{r},0,#{@is_long},0,#{ix1},#{iy1}")
 
   render: ->
     @arc = @drawDonutArc(@hilight, @color)
     @seg = @drawDonutSegment(
-      @path, 
-      @color, 
-      @backgroundColor, 
+      @path,
+      @color,
+      @backgroundColor,
       => @fire('hover', @index),
       => @fire('click', @index)
     )
 
   drawDonutArc: (path, color) ->
     @raphael.path(path)
-      .attr(stroke: color, 'stroke-width': 2, opacity: 0)
+    .attr(stroke: color, 'stroke-width': 2, opacity: 0)
 
   drawDonutSegment: (path, fillColor, strokeColor, hoverFunction, clickFunction) ->
     @raphael.path(path)
-      .attr(fill: fillColor, stroke: strokeColor, 'stroke-width': 3)
-      .hover(hoverFunction)
-      .click(clickFunction)
+    .attr(fill: fillColor, stroke: strokeColor, 'stroke-width': 3)
+    .hover(hoverFunction)
+    .click(clickFunction)
 
   select: =>
     unless @selected

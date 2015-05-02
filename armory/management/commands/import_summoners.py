@@ -6,13 +6,14 @@ import sys
 from time import sleep
 import random
 
+
 class Command(BaseCommand):
     def handle(self, *args, **options):
 
         summoner_list = models.Summoners.objects.all().order_by('-dateAdded')
         query_set = []
         for i in range(3000):
-            query_set.append(summoner_list[random.randint(0,len(summoner_list))])
+            query_set.append(summoner_list[random.randint(0, len(summoner_list))])
 
         ri = RiotInterface()
         del summoner_list
@@ -22,4 +23,4 @@ class Command(BaseCommand):
             ri.import_summoner_id_from_pull(summoner.summonerId)
             summoners_left = len(query_set) - index
             print "Completed %d, we have %d summoners left in this run" % (index, summoners_left)
-        # ri.import_summoner_id_from_pull(25500646)
+            # ri.import_summoner_id_from_pull(25500646)

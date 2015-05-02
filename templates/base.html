@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 {% load staticfiles %}
-<html lang="en">
+<html lang="en" ng-app="matchHistory">
 
 <head>
 
@@ -11,6 +11,8 @@
     <meta name="author" content="">
 
     <title>LoL Big Data</title>
+    <script src="{% static 'armory/js/angular.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'armory/js/armory-app.js' %}"></script>
     <script src="{% static 'js/jquery.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <link href="http://ironsummitmedia.github.io/startbootstrap-sb-admin-2/bower_components/bootstrap/dist/css/bootstrap.min.css"/>
@@ -39,7 +41,6 @@
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-
 </head>
 <body>
 <div id="wrapper">

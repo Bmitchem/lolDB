@@ -92,6 +92,5 @@ class TestWinrate80Percent(TestCase):
         self.assertEqual(self.champ2.winrate, 80)
 
 
-
 if __name__ == '__main__':
     unittest.main()

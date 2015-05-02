@@ -11,9 +11,10 @@ import json
 import cPickle
 from os import path
 
-@cache_page(60*15)
+
+@cache_page(60 * 15)
 def index(request):
-    #list of current games
+    # list of current games
     main_page_stats = []
     champs = models.Champions.objects.filter(freeToPlay=1).order_by('-winrate')
     champ_list = models.Champions.objects.all().order_by('name')
@@ -34,11 +35,9 @@ def index(request):
         graph = utils.game_type_graph()
         cPickle.dump(graph, open('front_page_graph.json', 'w+'))
 
-
-
     return render_to_response('index.html', {
         'main_page_stats': main_page_stats,
-        'champions' : champs,
+        'champions': champs,
         'graph': graph,
         'champ_list': champ_list,
         'page_title': 'Dashboard',

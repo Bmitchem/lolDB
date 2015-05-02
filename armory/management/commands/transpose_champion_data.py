@@ -3,6 +3,7 @@ import numpy
 from armory.models import ParticipantStats
 from django.core.management.base import BaseCommand
 
+
 class Command(BaseCommand):
     def handle(self, *args, **options):
         player_stats = ParticipantStats.objects.filter(championId=0)

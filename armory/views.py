@@ -44,6 +44,7 @@ def champion(request):
 
     }))
 
+
 def champion_search(request):
     champ_list = []
     starts_with = ''
@@ -92,13 +93,34 @@ def player_search(request):
 
     champ_list = models.Champions.objects.filter(id__in=champs)
 
-
-
-
     return HttpResponse(render_to_response('armory/player_match_history.html',
                                            {'match_json': player_match_history, 'player_name': player_name,
                                             'champ_list': champ_list}))
 
+
+def match_info_update(request):
+    if request.method == 'GET':
+        match = request.GET['match']
+    else:
+        return
+
+    ri = RiotInterface()
+    match_detail = ri.pull_match_info(match)
+
+    team_blue = []
+    team_red = []
+
+    for participant in match_detail['participants']:
+        print "participant info-- Lane: %s Role: %s" % (participant['timeline']['lane'], participant['timeline']['role'])
+        participant['championId'] = models.Champions.objects.filter(id=participant['championId']).first()
+        if participant['teamId'] == 100:
+            team_red.append(participant)
+        else:
+            team_blue.append(participant)
+    return HttpResponse(render_to_response('armory/match_timeline_chart.html',{
+        'team_blue':team_blue,
+        'team_red':team_red,
+    }))
 
 
 

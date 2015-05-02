@@ -6,7 +6,8 @@
  * Licensed under the MIT licenses.
  */
 
-;(function(root, factory) {
+;
+(function (root, factory) {
 
     if (typeof define === 'function' && define.amd) {
         define('gridster-draggable', ['jquery'], factory);
@@ -14,7 +15,7 @@
         root.GridsterDraggable = factory(root.$ || root.jQuery);
     }
 
-}(this, function($) {
+}(this, function ($) {
 
     var defaults = {
         items: 'li',
@@ -34,64 +35,64 @@
     };
 
     var $window = $(window);
-    var dir_map = { x : 'left', y : 'top' };
+    var dir_map = {x: 'left', y: 'top'};
     var isTouch = !!('ontouchstart' in window);
 
-    var capitalize = function(str) {
+    var capitalize = function (str) {
         return str.charAt(0).toUpperCase() + str.slice(1);
     };
 
     var idCounter = 0;
-    var uniqId = function() {
+    var uniqId = function () {
         return ++idCounter + '';
     }
 
     /**
-    * Basic drag implementation for DOM elements inside a container.
-    * Provide start/stop/drag callbacks.
-    *
-    * @class Draggable
-    * @param {HTMLElement} el The HTMLelement that contains all the widgets
-    *  to be dragged.
-    * @param {Object} [options] An Object with all options you want to
-    *        overwrite:
-    *    @param {HTMLElement|String} [options.items] Define who will
-    *     be the draggable items. Can be a CSS Selector String or a
-    *     collection of HTMLElements.
-    *    @param {Number} [options.distance] Distance in pixels after mousedown
-    *     the mouse must move before dragging should start.
-    *    @param {Boolean} [options.limit] Constrains dragging to the width of
-    *     the container
-    *    @param {Object|Function} [options.ignore_dragging] Array of node names
-    *      that sould not trigger dragging, by default is `['INPUT', 'TEXTAREA',
-    *      'SELECT', 'BUTTON']`. If a function is used return true to ignore dragging.
-    *    @param {offset_left} [options.offset_left] Offset added to the item
-    *     that is being dragged.
-    *    @param {Number} [options.drag] Executes a callback when the mouse is
-    *     moved during the dragging.
-    *    @param {Number} [options.start] Executes a callback when the drag
-    *     starts.
-    *    @param {Number} [options.stop] Executes a callback when the drag stops.
-    * @return {Object} Returns `el`.
-    * @constructor
-    */
+     * Basic drag implementation for DOM elements inside a container.
+     * Provide start/stop/drag callbacks.
+     *
+     * @class Draggable
+     * @param {HTMLElement} el The HTMLelement that contains all the widgets
+     *  to be dragged.
+     * @param {Object} [options] An Object with all options you want to
+     *        overwrite:
+     *    @param {HTMLElement|String} [options.items] Define who will
+     *     be the draggable items. Can be a CSS Selector String or a
+     *     collection of HTMLElements.
+     *    @param {Number} [options.distance] Distance in pixels after mousedown
+     *     the mouse must move before dragging should start.
+     *    @param {Boolean} [options.limit] Constrains dragging to the width of
+     *     the container
+     *    @param {Object|Function} [options.ignore_dragging] Array of node names
+     *      that sould not trigger dragging, by default is `['INPUT', 'TEXTAREA',
+     *      'SELECT', 'BUTTON']`. If a function is used return true to ignore dragging.
+     *    @param {offset_left} [options.offset_left] Offset added to the item
+     *     that is being dragged.
+     *    @param {Number} [options.drag] Executes a callback when the mouse is
+     *     moved during the dragging.
+     *    @param {Number} [options.start] Executes a callback when the drag
+     *     starts.
+     *    @param {Number} [options.stop] Executes a callback when the drag stops.
+     * @return {Object} Returns `el`.
+     * @constructor
+     */
     function Draggable(el, options) {
-      this.options = $.extend({}, defaults, options);
-      this.$document = $(document);
-      this.$container = $(el);
-      this.$dragitems = $(this.options.items, this.$container);
-      this.is_dragging = false;
-      this.player_min_left = 0 + this.options.offset_left;
-      this.id = uniqId();
-      this.ns = '.gridster-draggable-' + this.id;
-      this.init();
+        this.options = $.extend({}, defaults, options);
+        this.$document = $(document);
+        this.$container = $(el);
+        this.$dragitems = $(this.options.items, this.$container);
+        this.is_dragging = false;
+        this.player_min_left = 0 + this.options.offset_left;
+        this.id = uniqId();
+        this.ns = '.gridster-draggable-' + this.id;
+        this.init();
     }
 
     Draggable.defaults = defaults;
 
     var fn = Draggable.prototype;
 
-    fn.init = function() {
+    fn.init = function () {
         var pos = this.$container.css('position');
         this.calculate_dimensions();
         this.$container.css('position', pos === 'static' ? 'relative' : pos);
@@ -102,11 +103,11 @@
             throttle($.proxy(this.calculate_dimensions, this), 200));
     };
 
-    fn.nsEvent = function(ev) {
+    fn.nsEvent = function (ev) {
         return (ev || '') + this.ns;
     };
 
-    fn.events = function() {
+    fn.events = function () {
         this.pointer_events = {
             start: this.nsEvent('touchstart') + ' ' + this.nsEvent('mousedown'),
             move: this.nsEvent('touchmove') + ' ' + this.nsEvent('mousemove'),
@@ -119,9 +120,11 @@
         this.$container.on(this.pointer_events.start, this.options.items,
             $.proxy(this.drag_handler, this));
 
-        this.$document.on(this.pointer_events.end, $.proxy(function(e) {
+        this.$document.on(this.pointer_events.end, $.proxy(function (e) {
             this.is_dragging = false;
-            if (this.disabled) { return; }
+            if (this.disabled) {
+                return;
+            }
             this.$document.off(this.pointer_events.move);
             if (this.drag_start) {
                 this.on_dragstop(e);
@@ -129,13 +132,13 @@
         }, this));
     };
 
-    fn.get_actual_pos = function($el) {
+    fn.get_actual_pos = function ($el) {
         var pos = $el.position();
         return pos;
     };
 
 
-    fn.get_mouse_pos = function(e) {
+    fn.get_mouse_pos = function (e) {
         if (e.originalEvent && e.originalEvent.touches) {
             var oe = e.originalEvent;
             e = oe.touches.length ? oe.touches[0] : oe.changedTouches[0];
@@ -148,7 +151,7 @@
     };
 
 
-    fn.get_offset = function(e) {
+    fn.get_offset = function (e) {
         e.preventDefault();
         var mouse_actual_pos = this.get_mouse_pos(e);
         var diff_x = Math.round(
@@ -156,14 +159,14 @@
         var diff_y = Math.round(mouse_actual_pos.top - this.mouse_init_pos.top);
 
         var left = Math.round(this.el_init_offset.left +
-            diff_x - this.baseX + $(window).scrollLeft() - this.win_offset_x);
+        diff_x - this.baseX + $(window).scrollLeft() - this.win_offset_x);
         var top = Math.round(this.el_init_offset.top +
-            diff_y - this.baseY + $(window).scrollTop() - this.win_offset_y);
+        diff_y - this.baseY + $(window).scrollTop() - this.win_offset_y);
 
         if (this.options.limit) {
             if (left > this.player_max_left) {
                 left = this.player_max_left;
-            } else if(left < this.player_min_left) {
+            } else if (left < this.player_min_left) {
                 left = this.player_min_left;
             }
         }
@@ -183,7 +186,7 @@
     };
 
 
-    fn.get_drag_data = function(e) {
+    fn.get_drag_data = function (e) {
         var offset = this.get_offset(e);
         offset.$player = this.$player;
         offset.$helper = this.helper ? this.$helper : this.$player;
@@ -192,10 +195,9 @@
     };
 
 
-    fn.set_limits = function(container_width) {
+    fn.set_limits = function (container_width) {
         container_width || (container_width = this.$container.width());
-        this.player_max_left = (container_width - this.player_width +
-            - this.options.offset_left);
+        this.player_max_left = (container_width - this.player_width + -this.options.offset_left);
 
         this.options.container_width = container_width;
 
@@ -203,7 +205,7 @@
     };
 
 
-    fn.scroll_in = function(axis, data) {
+    fn.scroll_in = function (axis, data) {
         var dir_prop = dir_map[axis];
 
         var area_size = 50;
@@ -246,19 +248,19 @@
     };
 
 
-    fn.manage_scroll = function(data) {
+    fn.manage_scroll = function (data) {
         this.scroll_in('x', data);
         this.scroll_in('y', data);
     };
 
 
-    fn.calculate_dimensions = function(e) {
+    fn.calculate_dimensions = function (e) {
         this.window_height = $window.height();
         this.window_width = $window.width();
     };
 
 
-    fn.drag_handler = function(e) {
+    fn.drag_handler = function (e) {
         var node = e.target.nodeName;
         // skip if drag is disabled, or click was not done with the mouse primary button
         if (this.disabled || e.which !== 1 && !isTouch) {
@@ -277,7 +279,7 @@
         this.mouse_init_pos = this.get_mouse_pos(e);
         this.offsetY = this.mouse_init_pos.top - this.el_init_pos.top;
 
-        this.$document.on(this.pointer_events.move, function(mme) {
+        this.$document.on(this.pointer_events.move, function (mme) {
             var mouse_actual_pos = self.get_mouse_pos(mme);
             var diff_x = Math.abs(
                 mouse_actual_pos.left - self.mouse_init_pos.left);
@@ -285,7 +287,7 @@
                 mouse_actual_pos.top - self.mouse_init_pos.top);
             if (!(diff_x > self.options.distance ||
                 diff_y > self.options.distance)
-                ) {
+            ) {
                 return false;
             }
 
@@ -302,14 +304,18 @@
             return false;
         });
 
-        if (!isTouch) { return false; }
+        if (!isTouch) {
+            return false;
+        }
     };
 
 
-    fn.on_dragstart = function(e) {
+    fn.on_dragstart = function (e) {
         e.preventDefault();
 
-        if (this.is_dragging) { return this; }
+        if (this.is_dragging) {
+            return this;
+        }
 
         this.drag_start = this.is_dragging = true;
         var offset = this.$container.offset();
@@ -342,7 +348,7 @@
     };
 
 
-    fn.on_dragmove = function(e) {
+    fn.on_dragmove = function (e) {
         var data = this.get_drag_data(e);
 
         this.options.autoscroll && this.manage_scroll(data);
@@ -350,8 +356,8 @@
         if (this.options.move_element) {
             (this.helper ? this.$helper : this.$player).css({
                 'position': 'absolute',
-                'left' : data.position.left,
-                'top' : data.position.top
+                'left': data.position.left,
+                'top': data.position.top
             });
         }
 
@@ -367,7 +373,7 @@
     };
 
 
-    fn.on_dragstop = function(e) {
+    fn.on_dragstop = function (e) {
         var data = this.get_drag_data(e);
         this.drag_start = false;
 
@@ -382,8 +388,10 @@
         return false;
     };
 
-    fn.on_select_start = function(e) {
-        if (this.disabled) { return; }
+    fn.on_select_start = function (e) {
+        if (this.disabled) {
+            return;
+        }
 
         if (this.ignore_drag(e)) {
             return;
@@ -392,15 +400,15 @@
         return false;
     };
 
-    fn.enable = function() {
+    fn.enable = function () {
         this.disabled = false;
     };
 
-    fn.disable = function() {
+    fn.disable = function () {
         this.disabled = true;
     };
 
-    fn.destroy = function() {
+    fn.destroy = function () {
         this.disable();
 
         this.$container.off(this.ns);
@@ -410,7 +418,7 @@
         $.removeData(this.$container, 'drag');
     };
 
-    fn.ignore_drag = function(event) {
+    fn.ignore_drag = function (event) {
         if (this.options.handle) {
             return !$(event.target).is(this.options.handle);
         }
@@ -423,7 +431,7 @@
     };
 
     //jQuery adapter
-    $.fn.drag = function ( options ) {
+    $.fn.drag = function (options) {
         return new Draggable(this, options);
     };
 

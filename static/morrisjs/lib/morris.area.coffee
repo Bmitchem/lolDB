@@ -1,7 +1,7 @@
 class Morris.Area extends Morris.Line
   # Initialise
   #
-  areaDefaults = 
+  areaDefaults =
     fillOpacity: 'auto'
     behaveLikeLine: false
 
@@ -37,9 +37,9 @@ class Morris.Area extends Morris.Line
   drawSeries: ->
     @seriesPoints = []
     if @options.behaveLikeLine
-      range = [0..@options.ykeys.length-1]
+      range = [0..@options.ykeys.length - 1]
     else
-      range = [@options.ykeys.length-1..0]
+      range = [@options.ykeys.length - 1..0]
 
     for i in range
       @_drawFillFor i
@@ -61,6 +61,6 @@ class Morris.Area extends Morris.Line
 
   drawFilledPath: (path, fill) ->
     @raphael.path(path)
-      .attr('fill', fill)
-      .attr('fill-opacity', @options.fillOpacity)
-      .attr('stroke', 'none')
+    .attr('fill', fill)
+    .attr('fill-opacity', @options.fillOpacity)
+    .attr('stroke', 'none')

@@ -11,15 +11,17 @@ def ward_win_graph():
     player_win_stats = models.ParticipantStats.objects.all()
     victory_chances = []
     player_win_stats = player_win_stats.values('winner', 'wardsPlaced')
-    for ward in range(0,100):
+    for ward in range(0, 100):
         victory_chances.append(game_ward_win(ward, player_win_stats))
 
     from pygal.style import LightStyle
+
     line_chart = pygal.Line(style=LightStyle)
     line_chart.title = 'Ward Victories '
     line_chart.x_labels = map(str, range(0, 26))
     line_chart.add('Wards Placed', victory_chances[1:26:])
     return line_chart.render()
+
 
 def game_ward_win(ward_num, player_stats):
     game_results = []
@@ -32,7 +34,6 @@ def game_ward_win(ward_num, player_stats):
 
 
 def game_type_graph():
-
     games = models.Game.objects.all()
     games = games.values('gameMode', 'mapId')
     total_games = len(games)
@@ -53,9 +54,8 @@ def game_type_graph():
     aram_games = float(aram) / float(total_games) * 100
     dominion_games = float(dominion) / float(total_games) * 100
 
-
-
     from pygal.style import LightStyle
+
     pie_chart = pygal.Pie(style=LightStyle)
     pie_chart.title = 'Game Mode selection (in %)'
     pie_chart.add('Summoner\'s Rift', rift_games)
@@ -64,21 +64,20 @@ def game_type_graph():
     pie_chart.add('Dominion', dominion_games)
     return pie_chart.render()
 
+
 def champion_damage_distribution(champion):
-    player_stats = models.ParticipantStats.objects.all().filter(championId=champion).values('physicalDamageDealtToChampions',
-                                                                                 'magicDamageDealtToChampions',
-                                                                                 'trueDamageDealtToChampions',
-                                                                                 'totalDamageDealtToChampions')
+    player_stats = models.ParticipantStats.objects.all().filter(championId=champion).values(
+        'physicalDamageDealtToChampions',
+        'magicDamageDealtToChampions',
+        'trueDamageDealtToChampions',
+        'totalDamageDealtToChampions')
     total_damage = champion_total_damage(player_stats)
     phys_damage = champion_damage_physical(player_stats)
     magic_damage = champion_damage_magic(player_stats)
     true_damage = champion_damage_true(player_stats)
 
-
-
-
-
     from pygal.style import LightStyle
+
     pie_chart = pygal.Pie(style=LightStyle)
     pie_chart.title = 'Damage Distribution (in %)'
     if phys_damage:
@@ -89,11 +88,12 @@ def champion_damage_distribution(champion):
         pie_chart.add('True Damage', true_damage / float(total_damage))
     return pie_chart.render()
 
+
 def champion_damage_physical(relevant_player_stats):
     physical_damage_per_game = []
     for game in relevant_player_stats:
         physical_damage_per_game.append(game['physicalDamageDealtToChampions'])
-        
+
     return np.mean(physical_damage_per_game)
 
 
@@ -101,22 +101,25 @@ def champion_damage_true(relevant_player_stats):
     true_damage_per_game = []
     for game in relevant_player_stats:
         true_damage_per_game.append(game['trueDamageDealtToChampions'])
-        
+
     return np.mean(true_damage_per_game)
+
 
 def champion_damage_magic(relevant_player_stats):
     magic_damage_per_game = []
     for game in relevant_player_stats:
         magic_damage_per_game.append(game['magicDamageDealtToChampions'])
-        
+
     return np.mean(magic_damage_per_game)
+
 
 def champion_total_damage(relevant_player_stats):
     total_damage_per_game = []
     for game in relevant_player_stats:
         total_damage_per_game.append(game['totalDamageDealtToChampions'])
-        
+
     return np.mean(total_damage_per_game)
+
 
 def champion_map_pickrate(champion_id):
     relevant_stats = models.ParticipantStats.objects.filter(championId=champion_id).values('summonerId', 'winner')
@@ -126,8 +129,8 @@ def champion_map_pickrate(champion_id):
     treeline_winrate = get_champion_map_pickrate(constants.TWISTED_TREELINE_MAP_CODES, relevant_games, relevant_stats)
     dominion_winrate = get_champion_map_pickrate(constants.DOMINION_MAP_CODES, relevant_games, relevant_stats)
 
-
     from pygal.style import LightStyle
+
     pie_chart = pygal.Pie(style=LightStyle)
     pie_chart.title = 'Champion popularity per Map (in %)'
     if classic_winrate:
@@ -140,9 +143,9 @@ def champion_map_pickrate(champion_id):
         pie_chart.add('Dominion Popularity', dominion_winrate / float(len(relevant_games)))
     return pie_chart.render()
 
+
 def get_champion_map_pickrate(map_codes, relevant_games, relevant_stats):
     pick_rate = 0
-
 
     for game in relevant_games:
         if game['mapId'] in map_codes:
@@ -154,13 +157,14 @@ def get_champion_map_pickrate(map_codes, relevant_games, relevant_stats):
     else:
         return False
 
+
 def champion_item_builds(championId):
     relevant_stats = models.ParticipantStats.objects.filter(championId=championId)
     items = models.Items.objects.all().values('id', 'name', 'description')
     built_item_names = []
     for item in items:
         item_names = {
-            'id':{
+            'id': {
                 'name': item['name'],
                 'desc': item['description'],
             }
@@ -168,7 +172,6 @@ def champion_item_builds(championId):
         built_item_names.append(item_names)
     builds = []
     for game in relevant_stats:
-
         build = Set([
             game.item0,
             game.item1,
@@ -180,9 +183,8 @@ def champion_item_builds(championId):
         ])
         builds.append(build)
 
-
-
     return builds
+
 
 def champion_popularity(championId, stats):
     games_picked = 0
@@ -190,14 +192,13 @@ def champion_popularity(championId, stats):
         if stat.champion == championId:
             games_picked += 1
     if games_picked:
-        return (games_picked/ float(len(stats))) * 100
+        return (games_picked / float(len(stats))) * 100
     else:
         return 0.00
 
 
 def get_champion_map_winrate(map_codes, relevant_games, relevant_stats):
     winrate = []
-
 
     for game in relevant_games:
         if game['mapId'] in map_codes:

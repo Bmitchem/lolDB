@@ -6,31 +6,32 @@
  * Licensed under the MIT licenses.
  */
 
-;(function(root, factory) {
+;
+(function (root, factory) {
 
     if (typeof define === 'function' && define.amd) {
         define('gridster-coords', ['jquery'], factory);
     } else {
-       root.GridsterCoords = factory(root.$ || root.jQuery);
+        root.GridsterCoords = factory(root.$ || root.jQuery);
     }
 
-}(this, function($) {
+}(this, function ($) {
     /**
-    * Creates objects with coordinates (x1, y1, x2, y2, cx, cy, width, height)
-    * to simulate DOM elements on the screen.
-    * Coords is used by Gridster to create a faux grid with any DOM element can
-    * collide.
-    *
-    * @class Coords
-    * @param {HTMLElement|Object} obj The jQuery HTMLElement or a object with: left,
-    * top, width and height properties.
-    * @return {Object} Coords instance.
-    * @constructor
-    */
+     * Creates objects with coordinates (x1, y1, x2, y2, cx, cy, width, height)
+     * to simulate DOM elements on the screen.
+     * Coords is used by Gridster to create a faux grid with any DOM element can
+     * collide.
+     *
+     * @class Coords
+     * @param {HTMLElement|Object} obj The jQuery HTMLElement or a object with: left,
+     * top, width and height properties.
+     * @return {Object} Coords instance.
+     * @constructor
+     */
     function Coords(obj) {
         if (obj[0] && $.isPlainObject(obj[0])) {
             this.data = obj[0];
-        }else {
+        } else {
             this.el = obj;
         }
 
@@ -44,13 +45,13 @@
     var fn = Coords.prototype;
 
 
-    fn.init = function(){
+    fn.init = function () {
         this.set();
         this.original_coords = this.get();
     };
 
 
-    fn.set = function(update, not_update_offsets) {
+    fn.set = function (update, not_update_offsets) {
         var el = this.el;
 
         if (el && !update) {
@@ -76,15 +77,15 @@
         this.coords.y2 = d.top + d.height;
         this.coords.cx = d.left + (d.width / 2);
         this.coords.cy = d.top + (d.height / 2);
-        this.coords.width  = d.width;
+        this.coords.width = d.width;
         this.coords.height = d.height;
-        this.coords.el  = el || false ;
+        this.coords.el = el || false;
 
         return this;
     };
 
 
-    fn.update = function(data){
+    fn.update = function (data) {
         if (!data && !this.el) {
             return this;
         }
@@ -100,18 +101,18 @@
     };
 
 
-    fn.get = function(){
+    fn.get = function () {
         return this.coords;
     };
 
-    fn.destroy = function() {
+    fn.destroy = function () {
         this.el.removeData('coords');
         delete this.el;
     };
 
     //jQuery adapter
-    $.fn.coords = function() {
-        if (this.data('coords') ) {
+    $.fn.coords = function () {
+        if (this.data('coords')) {
             return this.data('coords');
         }
 

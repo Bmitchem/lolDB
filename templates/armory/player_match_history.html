@@ -5,7 +5,12 @@
     <!-- /.col-lg-12 -->
 
 </div>
-<div class="col-lg-8">
+<div class="col-lg-8" style="position: relative;" id="game_details_table">
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+        Please Select a match to view Detailed stats about that Match
+    </div>
+</div>
+<div class="col-lg-4">
     <table class="table table-bordered table-responsive">
         <thead>
         <tr>
@@ -16,33 +21,32 @@
         </tr>
         </thead>
         {% for match in  match_json.matches reversed %}
-
-            <tr id="game_row" class={% for stat in match.participants %}
+            <tr data-match="{{ match.matchId }}" class={% for stat in match.participants %}
                 {% ifequal stat.stats.winner True %}
-                    "btn-success"
+                    "btn-success game-row"
                 {% else %}
-                    "btn-danger"
+                    "btn-danger game-row"
                 {% endifequal %}
                 >{% endfor %}
-                <td>
-                    {% for stat in match.participants %}
-                        {% for champ in champ_list %}
-                            {% ifequal champ.id stat.championId %}
-                                <img src="http://ddragon.leagueoflegends.com/cdn/5.7.1/img/champion/{{ champ.image }}"
-                                     style="height: 2em;"/> {{ champ.name }}
-                            {% endifequal %}
-                        {% endfor %}
+            <td>
+                {% for stat in match.participants %}
+                    {% for champ in champ_list %}
+                        {% ifequal champ.id stat.championId %}
+                            <img src="http://ddragon.leagueoflegends.com/cdn/5.7.1/img/champion/{{ champ.image }}"
+                                 style="height: 2em;"/> {{ champ.name }}
+                        {% endifequal %}
                     {% endfor %}
-                </td>
-                <td>
-                    {{ match.matchMode }}
-                </td>
-                <td>
-                    {% widthratio match.matchDuration 60 1 %} minutes
-                </td>
-                <td>
-                    {{ match.matchCreation }}
-                </td>
+                {% endfor %}
+            </td>
+            <td>
+                {{ match.matchMode }}
+            </td>
+            <td>
+                {% widthratio match.matchDuration 60 1 %} minutes
+            </td>
+            <td>
+                {{ match.matchCreation }}
+            </td>
             </tr>
 
         {% endfor %}
@@ -50,4 +54,14 @@
 </div>
 <script>
     $('.bs-champion-page-load-modal').modal('hide');
+
+    $('.game-row').click(function () {
+        console.log("clicked");
+        var match = $(this).data('match');
+        console.log(match);
+        $.get('/armory/match_specific_data/', {match: match}, function (data) {
+            var $target = $('#game_details_table');
+            $target.html(data);
+        });
+    });
 </script>

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 from keys import RIOT_API_KEY
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
@@ -66,7 +67,7 @@ DATABASES = {
 }
 
 
-#mysql -u bmitchem -hriotdb.cyafaij0s6ly.us-west-2.rds.amazonaws.com -P 3306 -p riotDatabase< ritodb.sql
+# mysql -u bmitchem -hriotdb.cyafaij0s6ly.us-west-2.rds.amazonaws.com -P 3306 -p riotDatabase< ritodb.sql
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
@@ -85,15 +86,15 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
-STATIC_PATH = os.path.join(BASE_DIR,'static')
+STATIC_PATH = os.path.join(BASE_DIR, 'static')
 
-STATIC_URL = '/static/' # You may find this is already defined as such.
+STATIC_URL = '/static/'  # You may find this is already defined as such.
 
 STATICFILES_DIRS = (
     STATIC_PATH,
 )
 
 TEMPLATE_DIRS = (
-    os.path.join(BASE_DIR,  'templates'),
+    os.path.join(BASE_DIR, 'templates'),
 )
 

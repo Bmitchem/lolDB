@@ -4,6 +4,7 @@ from riot_api import RiotInterface
 from armory import models
 import time
 
+
 def compute():
     empty_stats = models.ParticipantStats.objects.filter(summonerId=0)
     for stat in empty_stats:

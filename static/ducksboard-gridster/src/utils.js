@@ -1,4 +1,5 @@
-;(function(window, undefined) {
+;
+(function (window, undefined) {
 
     /* Delay, debounce and throttle functions taken from underscore.js
      *
@@ -27,45 +28,50 @@
      * OTHER DEALINGS IN THE SOFTWARE.
      */
 
-    window.delay = function(func, wait) {
+    window.delay = function (func, wait) {
         var args = Array.prototype.slice.call(arguments, 2);
-        return setTimeout(function(){ return func.apply(null, args); }, wait);
+        return setTimeout(function () {
+            return func.apply(null, args);
+        }, wait);
     };
 
-    window.debounce = function(func, wait, immediate) {
+    window.debounce = function (func, wait, immediate) {
         var timeout;
-        return function() {
-          var context = this, args = arguments;
-          var later = function() {
-            timeout = null;
-            if (!immediate) func.apply(context, args);
-          };
-          if (immediate && !timeout) func.apply(context, args);
-          clearTimeout(timeout);
-          timeout = setTimeout(later, wait);
+        return function () {
+            var context = this, args = arguments;
+            var later = function () {
+                timeout = null;
+                if (!immediate) func.apply(context, args);
+            };
+            if (immediate && !timeout) func.apply(context, args);
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
         };
     };
 
-    window.throttle = function(func, wait) {
+    window.throttle = function (func, wait) {
         var context, args, timeout, throttling, more, result;
         var whenDone = debounce(
-            function(){ more = throttling = false; }, wait);
-        return function() {
-          context = this; args = arguments;
-          var later = function() {
-            timeout = null;
-            if (more) func.apply(context, args);
+            function () {
+                more = throttling = false;
+            }, wait);
+        return function () {
+            context = this;
+            args = arguments;
+            var later = function () {
+                timeout = null;
+                if (more) func.apply(context, args);
+                whenDone();
+            };
+            if (!timeout) timeout = setTimeout(later, wait);
+            if (throttling) {
+                more = true;
+            } else {
+                result = func.apply(context, args);
+            }
             whenDone();
-          };
-          if (!timeout) timeout = setTimeout(later, wait);
-          if (throttling) {
-            more = true;
-          } else {
-            result = func.apply(context, args);
-          }
-          whenDone();
-          throttling = true;
-          return result;
+            throttling = true;
+            return result;
         };
     };
 

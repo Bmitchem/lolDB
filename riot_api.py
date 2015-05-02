@@ -10,6 +10,14 @@ class RiotInterface(object):
     def __init__(self):
         pass
 
+    def pull_match_info(self, matchId):
+        resp = requests.get('https://na.api.pvp.net/api/lol/na/v2.2/match/%s?includeTimeline=True&api_key=%s' %
+                            (matchId, settings.RIOT_API_KEY))
+        if resp.status_code == 200:
+            return resp.json()
+        else:
+            return None
+
     def pull_summoner_id(self, name):
         resp = requests.get('https://na.api.pvp.net/api/lol/na/v1.4/summoner/by-name/%s?api_key=%s' %
                             (name, settings.RIOT_API_KEY))
@@ -143,7 +151,8 @@ class RiotInterface(object):
 
     def update_free_champions(self):
         from django.core.exceptions import ObjectDoesNotExist
-        champion_list=self.get_champions().json()
+
+        champion_list = self.get_champions().json()
         for champion in champion_list['champions']:
             try:
                 champ = models.Champions.objects.get(id=champion['id'])
@@ -166,9 +175,9 @@ class RiotInterface(object):
             print("processing champion: ", champion.get('name'))
 
             c, new = models.Champions.objects.get_or_create(id=champion.get('id'),
-                                                       defaults={
-                                                           'name': champion.get('name'),
-                                                       })
+                                                            defaults={
+                                                                'name': champion.get('name'),
+                                                            })
 
             c.image = champion.get('image').get('full')
             c.save()
@@ -203,14 +212,13 @@ class RiotInterface(object):
 
             c.stats.add(stats)
 
-
             for skin in champion.get('skins'):
                 new_skin = models.ChampionSkins.objects.get_or_create(id=skin.get('id'),
-                                                                            defaults={
-                                                                                'name': skin.get('name'),
-                                                                                'num': skin.get('num'),
-                                                                            }
-                                                                    )[0]
+                                                                      defaults={
+                                                                          'name': skin.get('name'),
+                                                                          'num': skin.get('num'),
+                                                                      }
+                                                                      )[0]
 
                 c.skins.add(new_skin)
 
@@ -256,6 +264,7 @@ class RiotInterface(object):
 
     def import_summoner_id_from_pull(self, summonerId):
         from datetime import datetime
+
         resp = self.summoner_id_pull(summonerId).json()
         # fd = open('starting_match_history.json', 'w+')
         # import json
@@ -270,18 +279,19 @@ class RiotInterface(object):
 
                 champ = models.Champions.objects.get(id=game['championId'])
                 new_match, new = models.Game.objects.get_or_create(gameId=game['gameId'],
-                                                                     defaults={
-                                                                         'mapId': game['mapId'],
-                                                                         'matchCreation': datetime.fromtimestamp(game['createDate'] / 1000.0),
-                                                                         'ipEarned': game['ipEarned'],
-                                                                         'summonerId': resp['summonerId'],
-                                                                         'spell1': game['spell1'],
-                                                                         'spell2': game['spell2'],
+                                                                   defaults={
+                                                                       'mapId': game['mapId'],
+                                                                       'matchCreation': datetime.fromtimestamp(
+                                                                           game['createDate'] / 1000.0),
+                                                                       'ipEarned': game['ipEarned'],
+                                                                       'summonerId': resp['summonerId'],
+                                                                       'spell1': game['spell1'],
+                                                                       'spell2': game['spell2'],
 
-                                                                     })
+                                                                   })
 
-                new_match.gameType=game['gameType']
-                new_match.gameMode=game['gameMode']
+                new_match.gameType = game['gameType']
+                new_match.gameMode = game['gameMode']
                 new_match.save()
 
                 new_match.championId.add(champ)
@@ -290,10 +300,10 @@ class RiotInterface(object):
 
                 player = models.Participant.objects.get_or_create(summonerId=summonerId,
                                                                   defaults={
-                                                                    'spell1Id':game['spell1'],
-                                                                    'spell2Id':game['spell2'],
-                                                                    'teamId':game['teamId'],
-                                                                    'matchId':game['gameId'],
+                                                                      'spell1Id': game['spell1'],
+                                                                      'spell2Id': game['spell2'],
+                                                                      'teamId': game['teamId'],
+                                                                      'matchId': game['gameId'],
 
                                                                   })[0]
                 new_match.fellowPlayers.add(player)
@@ -301,15 +311,15 @@ class RiotInterface(object):
                 for players in player_sets:
                     champ = models.Champions.objects.get(id=players['championId'])
                     participant, trash = models.Participant.objects.get_or_create(summonerId=players['summonerId'],
-                                                                             defaults={
-                                                                                 'teamId': players['teamId'],
-                                                                             })
+                                                                                  defaults={
+                                                                                      'teamId': players['teamId'],
+                                                                                  })
                     participant.champion = champ.id
                     participant.save()
                     summoner = models.Summoners.objects.get_or_create(summonerId=players['summonerId'],
                                                                       defaults={
-                                                                                 'teamId': players['teamId'],
-                                                                             }
+                                                                          'teamId': players['teamId'],
+                                                                      }
                                                                       )[0]
 
                     summoner.champion.add(champ)
@@ -368,12 +378,13 @@ class RiotInterface(object):
 
                 )
                 new_stats.participant.add(
-                        models.Participant.objects.get(summonerId=summonerId),)
+                    models.Participant.objects.get(summonerId=summonerId), )
                 new_match.stats.add(new_stats)
 
             except KeyError as e:
                 print "Out of API sleeping"
                 import time
+
                 time.sleep(30)
         print "Added %d Summoners" % (len(models.Summoners.objects.all()) - curr_summoners)
         print "Added %d Games" % (len(models.Game.objects.all()) - curr_games)
