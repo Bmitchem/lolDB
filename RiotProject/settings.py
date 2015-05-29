@@ -34,6 +34,8 @@ INSTALLED_APPS = (
     'riotapibase',
     'armory',
     'debug_toolbar',
+    'rest_framework',
+    'RiotRest',
 )
 
 MIDDLEWARE_CLASSES = (
